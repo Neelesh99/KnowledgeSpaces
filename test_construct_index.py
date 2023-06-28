@@ -1,8 +1,6 @@
 import unittest
 from unittest import mock
 
-from gpt_index import SimpleDirectoryReader
-
 from construct_index import *
 
 
