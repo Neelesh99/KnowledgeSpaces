@@ -1,6 +1,9 @@
 import os
 
-from gpt_index import PromptHelper
+import gpt_index
+from gpt_index import SimpleDirectoryReader, GPTListIndex, GPTSimpleVectorIndex, LLMPredictor, PromptHelper, Document, \
+    StringIterableReader
+from langchain.chat_models import ChatOpenAI
 
 
 class ModelConfig:
@@ -18,7 +21,7 @@ class ModelConfig:
         return False
 
 
-def get_model_restrictions_from_env() -> ModelConfig:
+def get_model_config_from_env() -> ModelConfig:
     max_input_size_str = os.getenv("MAX_INPUT_SIZE") if "MAX_INPUT_SIZE" in os.environ else "2048"
     num_outputs_str = os.getenv("NUM_OUTPUTS") if "NUM_OUTPUTS" in os.environ else "512"
     max_chunk_overlap_str = os.getenv("MAX_CHUNK_OVERLAP") if "MAX_CHUNK_OVERLAP" in os.environ else "28"
@@ -29,8 +32,33 @@ def get_model_restrictions_from_env() -> ModelConfig:
     return ModelConfig(int(max_input_size_str), int(num_outputs_str), int(max_chunk_overlap_str),
                        int(chunk_size_limit_str), float(temperature_str), model_name)
 
-def get_prompt_helper(model_restrictions: ModelConfig) -> PromptHelper:
-    return PromptHelper(model_restrictions.max_input_size, model_restrictions.num_outputs, model_restrictions.max_chunk_overlap, chunk_size_limit=model_restrictions.chunk_size_limit)
 
-class ConstructIndex:
-    pass
+def get_prompt_helper(model_restrictions: ModelConfig) -> PromptHelper:
+    return PromptHelper(model_restrictions.max_input_size, model_restrictions.num_outputs,
+                        model_restrictions.max_chunk_overlap, chunk_size_limit=model_restrictions.chunk_size_limit)
+
+
+def get_llm_predictor_from_config(model_config: ModelConfig) -> LLMPredictor:
+    llm_predictor = LLMPredictor(llm=get_llm(model_config))
+
+    return llm_predictor
+
+
+def get_vector_index(documents: list[Document]) -> GPTSimpleVectorIndex:
+    model_config = get_model_config_from_env()
+    predictor = get_llm_predictor_from_config(model_config)
+    prompt_helper = get_prompt_helper(model_config)
+    return GPTSimpleVectorIndex(documents, llm_predictor=predictor, prompt_helper=prompt_helper)
+
+
+def get_llm(model_config):
+    return ChatOpenAI(temperature=model_config.temperature, model_name=model_config.model_name,
+                      max_tokens=model_config.num_outputs)
+
+
+class IndexMaker:
+
+    @staticmethod
+    def get_index_from_text(list_of_text: list[str]):
+        documents = StringIterableReader().load_data(list_of_text)
+        return get_vector_index(documents)
