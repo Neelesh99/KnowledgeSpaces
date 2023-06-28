@@ -12,6 +12,7 @@ import os
 
 os.environ["OPENAI_API_KEY"] = 'smth'
 
+
 def construct_index(directory_path):
     max_input_size = 4096
     num_outputs = 512
@@ -30,10 +31,12 @@ def construct_index(directory_path):
 
     return index
 
+
 def chatbot(input_text):
     index = GPTSimpleVectorIndex.load_from_disk('index.json')
     response = index.query(input_text, response_mode="compact")
     return response.response
+
 
 iface = gr.Interface(fn=chatbot,
                      inputs=gr.components.Textbox(lines=7, label="Enter your text"),
