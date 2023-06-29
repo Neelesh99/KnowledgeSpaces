@@ -29,7 +29,7 @@ class ConstructIndexTest(unittest.TestCase):
     @mock.patch.dict(os.environ, {"OPENAI_API_KEY": "someKey", "LOCAL": "False"})
     def test_get_llm_generates_openapi_llm_with_right_properties(self):
         config = ModelConfig(2048, 512, 28, 300, 0.6, "gpt-3.5-turbo", False)
-        llm = get_llm(config)
+        llm = get_openai_api_llm(config)
         self.assertEqual("gpt-3.5-turbo", llm.model_name)
         self.assertEqual(0.6, llm.temperature)
         self.assertEqual(512, llm.max_tokens)

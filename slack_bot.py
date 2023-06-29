@@ -6,7 +6,7 @@ from gpt_index import GPTSimpleVectorIndex, LLMPredictor
 from slack_bolt import App
 from slack_sdk import WebClient
 
-from construct_index import IndexMaker, get_model_config_from_env, get_hf_llm_2, get_llm
+from construct_index import IndexMaker, get_model_config_from_env, get_local_llm_from_huggingface, get_openai_api_llm
 
 # Required to authenticate into slack
 ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -66,14 +66,14 @@ def get_app():
 
     # local_model gets a local LLM for the user (if LOCAL=True or not set in env variables)
     def local_model():
-        model = get_hf_llm_2(model_config)
+        model = get_local_llm_from_huggingface(model_config)
         index = GPTSimpleVectorIndex.load_from_disk('workspace_index.json', llm_predictor=LLMPredictor(llm=model),
                                                     embed_model=IndexMaker.get_hf_embeddings())
         return index
 
     # open_ai_model gets an OpenAi API LLM for the user (if LOCAL=False in env variables)
     def open_ai_model():
-        model = get_llm(model_config)
+        model = get_openai_api_llm(model_config)
         index = GPTSimpleVectorIndex.load_from_disk('workspace_index.json', llm_predictor=LLMPredictor(llm=model))
         return index
     return app
