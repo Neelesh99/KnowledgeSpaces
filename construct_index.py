@@ -2,7 +2,7 @@ import os
 
 import gpt_index
 from gpt_index import SimpleDirectoryReader, GPTListIndex, GPTSimpleVectorIndex, LLMPredictor, PromptHelper, Document, \
-    StringIterableReader
+    StringIterableReader, SlackReader
 from langchain.chat_models import ChatOpenAI
 
 
@@ -61,4 +61,9 @@ class IndexMaker:
     @staticmethod
     def get_index_from_text(list_of_text: list[str]):
         documents = StringIterableReader().load_data(list_of_text)
+        return get_vector_index(documents)
+
+    @staticmethod
+    def get_index_from_slack(channel_ids: list[str]):
+        documents = SlackReader().load_data(channel_ids)
         return get_vector_index(documents)
