@@ -11,11 +11,26 @@ from construct_index import IndexMaker, get_model_config_from_env, get_hf_llm_2,
 
 ssl_context = ssl.create_default_context(cafile=certifi.where())
 
-
+def filter_channels(list_channels, channel_names):
+    list_ids = []
+    for channel in list_channels:
+        if channel["is_member"] and channel["name"] in channel_names:
+            list_ids.append(channel["id"])
+    return list_ids
 def get_app():
     client = WebClient(token=os.environ["SLACK_BOT_TOKEN"], ssl=ssl_context)
     app = App(client=client)
     model_config = get_model_config_from_env()
+
+    @app.message("gpt index channels")
+    def index_workspace(message, say):
+        full_message = str(message["text"]).split("gpt index channels ")
+        channels_to_keep = full_message[1].split(" ")
+        list_channels = app.client.conversations_list().get("channels")
+        list_ids = filter_channels(list_channels, channels_to_keep)
+        index = IndexMaker.get_hf_index_from_slack(list_ids) if model_config.local else IndexMaker.get_index_from_slack(list_ids)
+        index.save_to_disk("workspace_index.json")
+        say("Workspace has been indexed: use query command to query it")
 
     @app.message("gpt index workspace")
     def index_workspace(message, say):
