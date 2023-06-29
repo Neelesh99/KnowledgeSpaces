@@ -1,9 +1,11 @@
 import os
 
-import gpt_index
-from gpt_index import SimpleDirectoryReader, GPTListIndex, GPTSimpleVectorIndex, LLMPredictor, PromptHelper, Document, \
-    StringIterableReader, SlackReader
+from gpt_index import GPTSimpleVectorIndex, LLMPredictor, PromptHelper, Document, \
+    StringIterableReader, SlackReader, LangchainEmbedding
+from langchain import HuggingFaceHub, HuggingFacePipeline
 from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.llms.base import LLM
 
 
 class ModelConfig:
@@ -38,22 +40,26 @@ def get_prompt_helper(model_restrictions: ModelConfig) -> PromptHelper:
                         model_restrictions.max_chunk_overlap, chunk_size_limit=model_restrictions.chunk_size_limit)
 
 
-def get_llm_predictor_from_config(model_config: ModelConfig) -> LLMPredictor:
-    llm_predictor = LLMPredictor(llm=get_llm(model_config))
-
-    return llm_predictor
-
-
-def get_vector_index(documents: list[Document]) -> GPTSimpleVectorIndex:
-    model_config = get_model_config_from_env()
-    predictor = get_llm_predictor_from_config(model_config)
+def get_vector_index(documents: list[Document], llm: LLM, model_config: ModelConfig, embeddings=None) -> GPTSimpleVectorIndex:
+    predictor = LLMPredictor(llm=llm)
     prompt_helper = get_prompt_helper(model_config)
-    return GPTSimpleVectorIndex(documents, llm_predictor=predictor, prompt_helper=prompt_helper)
+    if embeddings == None:
+        return GPTSimpleVectorIndex(documents, llm_predictor=predictor, prompt_helper=prompt_helper)
+    else:
+        return GPTSimpleVectorIndex(documents, llm_predictor=predictor, prompt_helper=prompt_helper, embed_model=LangchainEmbedding(embeddings))
 
 
 def get_llm(model_config):
     return ChatOpenAI(temperature=model_config.temperature, model_name=model_config.model_name,
                       max_tokens=model_config.num_outputs)
+
+def get_hf_llm(model_config):
+    return HuggingFaceHub(repo_id="declare-lab/flan-alpaca-base", model_kwargs={"temperature":1e-10})
+
+def get_hf_llm_2(model_config):
+    return HuggingFacePipeline.from_model_id(
+        model_id="declare-lab/flan-alpaca-base", task="text2text-generation"
+    )
 
 
 class IndexMaker:
@@ -61,9 +67,20 @@ class IndexMaker:
     @staticmethod
     def get_index_from_text(list_of_text: list[str]):
         documents = StringIterableReader().load_data(list_of_text)
-        return get_vector_index(documents)
+        model_config = get_model_config_from_env()
+        return get_vector_index(documents, get_llm(model_config), model_config)
 
     @staticmethod
     def get_index_from_slack(channel_ids: list[str]):
         documents = SlackReader().load_data(channel_ids)
-        return get_vector_index(documents)
+        model_config = get_model_config_from_env()
+        return get_vector_index(documents, get_llm(model_config), model_config)
+
+    @staticmethod
+    def get_hf_index_from_text(list_of_text: list[str]):
+        documents = StringIterableReader().load_data(list_of_text)
+        model_config = get_model_config_from_env()
+        model_name = "sentence-transformers/all-mpnet-base-v2"
+        model_kwargs = {'device': 'cpu'}
+        hf = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwargs)
+        return get_vector_index(documents, get_hf_llm_2(model_config), model_config, hf)
