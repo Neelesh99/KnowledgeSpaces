@@ -1,7 +1,11 @@
 import os
 
+from gpt_index import GPTSimpleVectorIndex
 from pymongo import MongoClient
+from pymongo.collection import Collection
 from pymongo.database import Database
+
+from knowledge_space import KnowledgeSpace
 
 
 class DatabaseConfig:
@@ -29,3 +33,7 @@ class DatabaseConfig:
 def get_db_from_config(config: DatabaseConfig) -> Database:
     client = MongoClient(config.connection_string)
     return client[config.db_name]
+
+def save_index(index: GPTSimpleVectorIndex, knowledge_collection: Collection, user_name: str):
+    knowledge_space = KnowledgeSpace(user_name, index.save_to_dict())
+    knowledge_collection.insert_one(knowledge_space)

@@ -1,8 +1,14 @@
 import os
 import unittest
 from unittest import mock
+from unittest.mock import MagicMock, Mock
 
-from database_utils import DatabaseConfig, get_db_from_config
+from gpt_index import GPTSimpleVectorIndex
+from pymongo.collection import Collection
+from pymongo.results import InsertOneResult
+
+from database_utils import DatabaseConfig, get_db_from_config, save_index
+from knowledge_space import KnowledgeSpace
 
 
 class DatabaseUtilsTestCase(unittest.TestCase):
@@ -23,3 +29,12 @@ class DatabaseUtilsTestCase(unittest.TestCase):
             "mongodb+srv://userName:somePassword@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority", "someDBName")
         db = get_db_from_config(config)
         self.assertEqual(db.name, "someDBName")
+
+    def test_save_index_will_construct_and_save_knowledge(self):
+        collection = Mock()
+        collection.insert_one = MagicMock(return_value=InsertOneResult("some_id", True))
+        index = Mock()
+        index.save_to_dict = MagicMock(return_value={})
+        expected_knowledge_space = KnowledgeSpace("some_user", {})
+        save_index(index, collection, "some_user")
+        collection.insert_one.assert_called_with(expected_knowledge_space)
