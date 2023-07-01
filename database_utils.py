@@ -35,5 +35,11 @@ def get_db_from_config(config: DatabaseConfig) -> Database:
     return client[config.db_name]
 
 def save_index(index: GPTSimpleVectorIndex, knowledge_collection: Collection, user_name: str):
-    knowledge_space = KnowledgeSpace(user_name, index.save_to_dict())
-    knowledge_collection.insert_one(knowledge_space)
+    knowledge_space = KnowledgeSpace(user_name, index.save_to_string())
+    knowledge_collection.insert_one(knowledge_space.to_dict())
+
+def get_index(knowledge_collection: Collection, user_name: str):
+    return knowledge_collection.find_one({"user_name": user_name})
+
+def slotted_to_dict(obj):
+    return {s: getattr(obj, s) for s in obj.__slots__ if hasattr(obj, s)}

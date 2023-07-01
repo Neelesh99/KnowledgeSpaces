@@ -7,7 +7,7 @@ from gpt_index import GPTSimpleVectorIndex
 from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
 
-from database_utils import DatabaseConfig, get_db_from_config, save_index
+from database_utils import DatabaseConfig, get_db_from_config, save_index, slotted_to_dict, get_index
 from knowledge_space import KnowledgeSpace
 
 
@@ -34,7 +34,14 @@ class DatabaseUtilsTestCase(unittest.TestCase):
         collection = Mock()
         collection.insert_one = MagicMock(return_value=InsertOneResult("some_id", True))
         index = Mock()
-        index.save_to_dict = MagicMock(return_value={})
-        expected_knowledge_space = KnowledgeSpace("some_user", {})
+        index.save_to_string = MagicMock(return_value="{}")
+        expected_knowledge_space = KnowledgeSpace("some_user", "{}")
         save_index(index, collection, "some_user")
-        collection.insert_one.assert_called_with(expected_knowledge_space)
+        collection.insert_one.assert_called_with(expected_knowledge_space.to_dict())
+
+    def test_get_index_will_get_KnowledgeSpace_for_user(self):
+        collection = Mock()
+        space = KnowledgeSpace("some_user", "{}")
+        collection.find_one = MagicMock(return_value=space)
+        actual_space = get_index(collection, "some_user")
+        self.assertEqual(space, actual_space)
