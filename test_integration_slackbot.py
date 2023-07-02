@@ -29,7 +29,7 @@ class SlackBothIntegrationTestCase(unittest.TestCase):
         list_ids = filter_channels(list_channels, ["test-channel"])
         app.client.chat_postMessage(channel=list_ids[0], text="gpt index workspace")
         time.sleep(2)
-        start = txime.time()
+        start = time.time()
         for i in range(20):
             print("Waiting for response after " + str(i*10) + " seconds")
             time.sleep(10)
