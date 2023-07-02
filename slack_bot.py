@@ -59,7 +59,6 @@ def get_app():
     # index_workspace indexes every channel that the slackbot is a part of
     @app.message("gpt index workspace")
     def index_workspace(message, say):
-
         list_channels = app.client.conversations_list().get("channels")
         list_ids = []
         for channel in list_channels:
