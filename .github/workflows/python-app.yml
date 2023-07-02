@@ -44,5 +44,6 @@ jobs:
         MONGO_CONNECTION_STRING_TEMPLATE: ${{ secrets.MONGO_CONNECTION_STRING_TEMPLATE }}
         MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
         MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}
       run: |
         pytest -m integration
