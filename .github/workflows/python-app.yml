@@ -40,6 +40,7 @@ jobs:
     - name: Integration tests
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_TEST_BOT_TOKEN: ${{ secrets.SLACK_TEST_BOT_TOKEN }}
         MONGO_CONNECTION_STRING_TEMPLATE: ${{ secrets.MONGO_CONNECTION_STRING_TEMPLATE }}
         MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
