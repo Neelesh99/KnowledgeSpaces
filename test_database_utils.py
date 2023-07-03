@@ -32,12 +32,12 @@ class DatabaseUtilsTestCase(unittest.TestCase):
 
     def test_save_index_will_construct_and_save_knowledge(self):
         collection = Mock()
-        collection.insert_one = MagicMock(return_value=InsertOneResult("some_id", True))
+        collection.replace_one = MagicMock(return_value=InsertOneResult("some_id", True))
         index = Mock()
         index.save_to_string = MagicMock(return_value="{}")
         expected_knowledge_space = KnowledgeSpace("some_user", "{}")
         save_index(index, collection, "some_user")
-        collection.insert_one.assert_called_with(expected_knowledge_space.to_dict())
+        collection.replace_one.assert_called_with({"user_name": "some_user"}, expected_knowledge_space.to_dict(), upsert=True)
 
     def test_get_index_will_get_KnowledgeSpace_for_user(self):
         collection = Mock()
