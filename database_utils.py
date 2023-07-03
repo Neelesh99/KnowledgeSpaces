@@ -39,7 +39,8 @@ def save_index(index: GPTSimpleVectorIndex, knowledge_collection: Collection, us
     knowledge_collection.replace_one({"user_name": user_name}, knowledge_space.to_dict(), upsert=True)
 
 def get_index(knowledge_collection: Collection, user_name: str):
-    return knowledge_collection.find_one({"user_name": user_name})
+    result =  knowledge_collection.find_one({"user_name": user_name})
+    return KnowledgeSpace(result["user_name"], result["index_dict"])
 
 def slotted_to_dict(obj):
     return {s: getattr(obj, s) for s in obj.__slots__ if hasattr(obj, s)}
