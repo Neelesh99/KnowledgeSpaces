@@ -42,6 +42,6 @@ class DatabaseUtilsTestCase(unittest.TestCase):
     def test_get_index_will_get_KnowledgeSpace_for_user(self):
         collection = Mock()
         space = KnowledgeSpace("some_user", "{}")
-        collection.find_one = MagicMock(return_value=space)
+        collection.find_one = MagicMock(return_value=space.to_dict())
         actual_space = get_index(collection, "some_user")
         self.assertEqual(space, actual_space)
