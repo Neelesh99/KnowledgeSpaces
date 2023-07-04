@@ -35,13 +35,13 @@ class DatabaseUtilsTestCase(unittest.TestCase):
         collection.replace_one = MagicMock(return_value=InsertOneResult("some_id", True))
         index = Mock()
         index.save_to_string = MagicMock(return_value="{}")
-        expected_knowledge_space = KnowledgeSpace("some_user", "{}")
+        expected_knowledge_space = KnowledgeSpace("some_user", "my_knowledge_space", "{}")
         save_index(index, collection, "some_user")
         collection.replace_one.assert_called_with({"user_name": "some_user"}, expected_knowledge_space.to_dict(), upsert=True)
 
     def test_get_index_will_get_KnowledgeSpace_for_user(self):
         collection = Mock()
-        space = KnowledgeSpace("some_user", "{}")
+        space = KnowledgeSpace("some_user", "my_knowledge_space", "{}")
         collection.find_one = MagicMock(return_value=space.to_dict())
-        actual_space = get_index(collection, "some_user")
+        actual_space = get_index(collection, "some_user", "my_knowledge_space")
         self.assertEqual(space, actual_space)

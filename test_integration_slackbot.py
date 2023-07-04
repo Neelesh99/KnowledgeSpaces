@@ -35,15 +35,15 @@ class SlackBothIntegrationTestCase(unittest.TestCase):
             self.fail("App was asked to index workspace but did not respond in 200 seconds")
 
     @pytest.mark.integration
-    def test_will_index_to_personal_workspace_then_query_it(self):
-        command_to_run = "gpt my_knowledge_space index channels random"
+    def test_will_index_to_custom_workspace_then_query_it(self):
+        command_to_run = "gpt index knowledge_space=some_knowledge_space channels general"
         app, list_ids = self.send_message_with_content(command_to_run)
-        response_to_search_for = "users knowledge space"
+        response_to_search_for = "users some_knowledge_space"
         responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
         if not responds_correctly:
             self.fail("App was asked to index workspace but did not respond in 200 seconds")
-        new_command_to_run = "gpt my_knowledge_space query What fruit did astronauts discover on pluto?"
-        response_to_search_for = "oranges"
+        new_command_to_run = "gpt query knowledge_space=some_knowledge_space What fruit did astronauts discover on pluto?"
+        response_to_search_for = "plums"
         app, list_ids = self.send_message_with_content(new_command_to_run)
         responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
         if not responds_correctly:
