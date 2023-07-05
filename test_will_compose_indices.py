@@ -31,8 +31,5 @@ class MyTestCase(unittest.TestCase):
         ComposableGraph.build_from_index(retrieved_first_index)
 
 
-
-
-
 if __name__ == '__main__':
     unittest.main()
