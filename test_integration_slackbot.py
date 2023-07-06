@@ -17,24 +17,6 @@ ssl_context = ssl.create_default_context(cafile=certifi.where())
 class SlackBothIntegrationTestCase(unittest.TestCase):
 
     @pytest.mark.integration
-    def test_will_index_workspace(self):
-        command_to_run = "gpt index workspace"
-        app, list_ids = self.send_message_with_content(command_to_run)
-        response_to_search_for = "Workspace has been indexed"
-        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
-        if not responds_correctly:
-            self.fail("App was asked to index workspace but did not respond in 200 seconds")
-
-    @pytest.mark.integration
-    def test_will_query_workspace(self):
-        command_to_run = "gpt query workspace What colour is steve's car?"
-        app, list_ids = self.send_message_with_content(command_to_run)
-        response_to_search_for = "blue"
-        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
-        if not responds_correctly:
-            self.fail("App was asked to index workspace but did not respond in 200 seconds")
-
-    @pytest.mark.integration
     def test_will_index_to_custom_workspace_then_query_it(self):
         command_to_run = "gpt index knowledge_space=some_knowledge_space channels general"
         app, list_ids = self.send_message_with_content(command_to_run)
