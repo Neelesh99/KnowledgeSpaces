@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from gpt_index import SimpleDirectoryReader
+from llama_index import SimpleDirectoryReader
 
 from construct_index import *
 
@@ -34,17 +34,11 @@ class ConstructIndexTest(unittest.TestCase):
         self.assertEqual(0.6, llm.temperature)
         self.assertEqual(512, llm.max_tokens)
 
-    @unittest.SkipTest
-    def test_get_vector_index(self):
-        documents = SimpleDirectoryReader("test_files").load_data()
-        index = get_vector_index(documents)
-        self.assertEqual(index, GPTSimpleVectorIndex.load_from_disk("test_expect/index.json"))
-
     @mock.patch.dict(os.environ, {"HUGGINGFACEHUB_API_TOKEN": "someText"})
     def test_get_hf_index_works(self):
         lines_of_text = ["Alexis is a small dog", "All dogs have a green ball"]
         index = IndexMaker.get_hf_index_from_text(lines_of_text)
-        self.assertEqual("Alexis ball is green.", index.query("What colour is Alexis ball?").response)
+        self.assertEqual("Alexis' ball is green.", index.as_query_engine().query("What colour is Alexis ball?").response)
 
 
 if __name__ == '__main__':

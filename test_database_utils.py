@@ -3,8 +3,6 @@ import unittest
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
-from gpt_index import GPTSimpleVectorIndex
-from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
 
 from database_utils import DatabaseConfig, get_db_from_config, save_index, slotted_to_dict, get_index

@@ -1,6 +1,7 @@
+import json
 import os
 
-from gpt_index import GPTSimpleVectorIndex
+from llama_index import VectorStoreIndex
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
@@ -34,15 +35,15 @@ def get_db_from_config(config: DatabaseConfig) -> Database:
     client = MongoClient(config.connection_string)
     return client[config.db_name]
 
-def save_index(index: GPTSimpleVectorIndex, knowledge_collection: Collection, user_name: str):
+def save_index(index: VectorStoreIndex, knowledge_collection: Collection, user_name: str):
     save_index_to_knowledge_space(index, "my_knowledge_space", knowledge_collection, user_name)
 
-def save_index_to_knowledge_space(index: GPTSimpleVectorIndex, knowledge_space_name: str, knowledge_collection: Collection, user_name: str):
-    knowledge_space = KnowledgeSpace(user_name, knowledge_space_name, index.save_to_string())
+def save_index_to_knowledge_space(index: VectorStoreIndex, knowledge_space_name: str, knowledge_collection: Collection, user_name: str):
+    knowledge_space = KnowledgeSpace(user_name, knowledge_space_name, json.dumps(index.storage_context.to_dict()))
     knowledge_collection.replace_one({"user_name": user_name}, knowledge_space.to_dict(), upsert=True)
 
 def get_index(knowledge_collection: Collection, user_name: str, knowledge_space: str):
-    result =  knowledge_collection.find_one({"user_name": user_name})
+    result = knowledge_collection.find_one({"user_name": user_name})
     return KnowledgeSpace(result["user_name"], knowledge_space, result["index_dict"])
 
 def slotted_to_dict(obj):

@@ -1,13 +1,16 @@
+import ast
+import json
 import os
 import re
 import ssl
 
 import certifi
-from gpt_index import GPTSimpleVectorIndex, LLMPredictor
+from llama_index import VectorStoreIndex, LLMPredictor, StorageContext, load_index_from_storage, ServiceContext
 from slack_bolt import App
 from slack_sdk import WebClient
 
-from construct_index import IndexMaker, get_model_config_from_env, get_local_llm_from_huggingface, get_openai_api_llm
+from construct_index import IndexMaker, get_model_config_from_env, get_local_llm_from_huggingface, get_openai_api_llm, \
+    get_prompt_helper
 from database_utils import DatabaseConfig, get_db_from_config, save_index, get_index, save_index_to_knowledge_space
 from knowledge_space import KnowledgeSpace
 
@@ -44,19 +47,6 @@ def get_app():
     # Getting knowledgespace collection
     knowledge_space_collection = db.get_collection("knowledge_space")
 
-    # index_channels indexes specific channels given by the user after "gpt index channels " for example "gpt index
-    # channels random general" will index random and general
-    @app.message("gpt index channels")
-    def index_channels(message, say):
-        full_message = str(message["text"]).split("gpt index channels ")
-        channels_to_keep = full_message[1].split(" ")
-        list_channels = app.client.conversations_list().get("channels")
-        list_ids = filter_channels(list_channels, channels_to_keep)
-        index = IndexMaker.get_hf_index_from_slack(list_ids) if model_config.local else IndexMaker.get_index_from_slack(
-            list_ids)
-        index.save_to_disk("workspace_index.json")
-        say("Workspace has been indexed: use query command to query it")
-
     # index_workspace indexes every channel that the slackbot is a part of
     @app.message("gpt index workspace")
     def index_workspace(message, say):
@@ -67,7 +57,8 @@ def get_app():
                 list_ids.append(channel["id"])
         index = IndexMaker.get_hf_index_from_slack(list_ids) if model_config.local else IndexMaker.get_index_from_slack(
             list_ids)
-        index.save_to_disk("workspace_index.json")
+        knowledge_space_name = "workspace_knowledge_space_bot"
+        save_index_to_knowledge_space(index, knowledge_space_name, knowledge_space_collection, "gpt_bot")
         say("Workspace has been indexed: use query command to query it")
 
     # index_channels_to_my_knowledge_space indexes the given channels to the specified users knowledge space
@@ -108,34 +99,47 @@ def get_app():
     def gpt_query(message, say):
         split_on_query = str(message["text"]).split("gpt query")
         actual_query = split_on_query[1]
-        index = local_workspace_model() if model_config.local else open_ai_workspace_model()
+        knowledge_space_name = "workspace_knowledge_space_bot"
+        knowledge_space = get_index(knowledge_space_collection, "gpt_bot", knowledge_space_name)
+        try:
+            index = local_knowledge_space_model(
+                knowledge_space) if model_config.local else open_ai_knowledge_space_model(knowledge_space)
+        except:
+            index = local_workspace_model() if model_config.local else open_ai_workspace_model()
         response = index.query(actual_query)
         say(response.response)
 
     def local_knowledge_space_model(knowledge_space: KnowledgeSpace):
         model = get_local_llm_from_huggingface(model_config)
-        index = GPTSimpleVectorIndex.load_from_string(knowledge_space.index_string,
-                                                      llm_predictor=LLMPredictor(llm=model),
-                                                      embed_model=IndexMaker.get_hf_embeddings())
-        return index
+        literal_eval = json.loads(knowledge_space.index_string)
+        storage_context = StorageContext.from_dict(literal_eval)
+        service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model),
+                                                       embed_model=IndexMaker.get_hf_embeddings())
+        index = load_index_from_storage(storage_context, service_context=service_context)
+        return index.as_query_engine(service_context=service_context)
 
     def open_ai_knowledge_space_model(knowledge_space: KnowledgeSpace):
         model = get_openai_api_llm(model_config)
-        index = GPTSimpleVectorIndex.load_from_string(knowledge_space.index_string,
-                                                      llm_predictor=LLMPredictor(llm=model))
-        return index
+        storage_context = StorageContext.from_dict(json.loads(knowledge_space.index_string))
+        service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model))
+        index = load_index_from_storage(storage_context, service_context=service_context)
+        return index.as_query_engine(service_context=service_context)
 
     # local_workspace_model gets a local LLM for the user (if LOCAL=True or not set in env variables)
     def local_workspace_model():
         model = get_local_llm_from_huggingface(model_config)
-        index = GPTSimpleVectorIndex.load_from_disk('workspace_index.json', llm_predictor=LLMPredictor(llm=model),
-                                                    embed_model=IndexMaker.get_hf_embeddings())
-        return index
+        storage_context = StorageContext.from_defaults(persist_dir="./storage")
+        service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model),
+                                                       embed_model=IndexMaker.get_hf_embeddings())
+        index = load_index_from_storage(storage_context, service_context=service_context)
+        return index.as_query_engine(service_context=service_context)
 
     # open_ai_workspace_model gets an OpenAi API LLM for the user (if LOCAL=False in env variables)
     def open_ai_workspace_model():
         model = get_openai_api_llm(model_config)
-        index = GPTSimpleVectorIndex.load_from_disk('workspace_index.json', llm_predictor=LLMPredictor(llm=model))
-        return index
+        storage_context = StorageContext.from_defaults(persist_dir="./storage")
+        service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model))
+        index = load_index_from_storage(storage_context, service_context=service_context)
+        return index.as_query_engine(service_context=service_context)
 
     return app
