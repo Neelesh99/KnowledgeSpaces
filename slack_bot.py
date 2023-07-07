@@ -47,6 +47,20 @@ def get_app():
     # Getting knowledgespace collection
     knowledge_space_collection = db.get_collection("knowledge_space")
 
+    # index_workspace indexes every channel that the slackbot is a part of
+    @app.message("gpt index workspace")
+    def index_workspace(message, say):
+        list_channels = app.client.conversations_list().get("channels")
+        list_ids = []
+        for channel in list_channels:
+            if channel["is_member"]:
+                list_ids.append(channel["id"])
+        index = IndexMaker.get_hf_index_from_slack(list_ids) if model_config.local else IndexMaker.get_index_from_slack(
+            list_ids)
+        knowledge_space_name = "workspace_knowledge_space_bot"
+        save_index_to_knowledge_space(index, knowledge_space_name, knowledge_space_collection, "gpt_bot")
+        say("Workspace has been indexed: use query command to query it")
+
     # index_channels_to_my_knowledge_space indexes the given channels to the specified users knowledge space
     @app.message("gpt index knowledge_space=")
     def index_channels_to_knowledge_space(message, say):
@@ -78,6 +92,21 @@ def get_app():
         except:
             index = local_workspace_model() if model_config.local else open_ai_workspace_model()
         response = index.query(result.group(2))
+        say(response.response)
+
+    # gpt_query runs a natural language query on the index that has been constructed so far
+    @app.message("gpt query")
+    def gpt_query(message, say):
+        split_on_query = str(message["text"]).split("gpt query")
+        actual_query = split_on_query[1]
+        knowledge_space_name = "workspace_knowledge_space_bot"
+        knowledge_space = get_index(knowledge_space_collection, "gpt_bot", knowledge_space_name)
+        try:
+            index = local_knowledge_space_model(
+                knowledge_space) if model_config.local else open_ai_knowledge_space_model(knowledge_space)
+        except:
+            index = local_workspace_model() if model_config.local else open_ai_workspace_model()
+        response = index.query(actual_query)
         say(response.response)
 
     def local_knowledge_space_model(knowledge_space: KnowledgeSpace):
