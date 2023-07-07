@@ -32,7 +32,9 @@ class DatabaseUtilsTestCase(unittest.TestCase):
         collection = Mock()
         collection.replace_one = MagicMock(return_value=InsertOneResult("some_id", True))
         index = Mock()
-        index.save_to_string = MagicMock(return_value="{}")
+        storage_context = Mock()
+        index.storage_context = storage_context
+        storage_context.to_dict = MagicMock(return_value={})
         expected_knowledge_space = KnowledgeSpace("some_user", "my_knowledge_space", "{}")
         save_index(index, collection, "some_user")
         collection.replace_one.assert_called_with({"user_name": "some_user"}, expected_knowledge_space.to_dict(), upsert=True)
