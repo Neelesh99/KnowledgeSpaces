@@ -1,6 +1,6 @@
 import unittest
 
-from compose_graph import compose_graph
+from compose_graph import compose_graph_hf
 from construct_index import IndexMaker
 
 
@@ -14,7 +14,7 @@ class ComposeGraphTestCase(unittest.TestCase):
         index_1 = IndexMaker.get_hf_index_from_text(info_index_1)
         index_2 = IndexMaker.get_hf_index_from_text(info_index_2)
 
-        graph = compose_graph([index_1, index_2], [summary_info_1, summary_info_2])
+        graph = compose_graph_hf([index_1, index_2], [summary_info_1, summary_info_2])
         response = graph.query("Does Alan have a ball?")
         text_response = str(response.response).lower()
         self.assertTrue(text_response.find("yes") != -1)
