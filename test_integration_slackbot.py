@@ -17,6 +17,30 @@ ssl_context = ssl.create_default_context(cafile=certifi.where())
 class SlackBothIntegrationTestCase(unittest.TestCase):
 
     @pytest.mark.integration
+    def test_will_compose_indexes(self):
+        command_to_run = "gpt index knowledge_space=first_knowledge_space channels compose_channel_1"
+        app, list_ids = self.send_message_with_content(command_to_run)
+        response_to_search_for = "users first_knowledge_space"
+        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
+        if not responds_correctly:
+            self.fail("App was asked to index workspace but did not respond in 200 seconds")
+
+        command_to_run = "gpt index knowledge_space=second_knowledge_space channels compose_channel_2"
+        app, list_ids = self.send_message_with_content(command_to_run)
+        response_to_search_for = "users second_knowledge_space"
+        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
+        if not responds_correctly:
+            self.fail("App was asked to index workspace but did not respond in 200 seconds")
+
+        new_command_to_run = "gpt compose knowledge_spaces=[first_knowledge_space,second_knowledge_space] query which country can fireflies and beetles be found in?"
+
+        response_to_search_for = "The country that"
+        app, list_ids = self.send_message_with_content(new_command_to_run)
+        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
+        if not responds_correctly:
+            self.fail("App was asked to index workspace but did not respond in 200 seconds")
+
+    @pytest.mark.integration
     def test_will_index_workspace(self):
         command_to_run = "gpt index workspace"
         app, list_ids = self.send_message_with_content(command_to_run)

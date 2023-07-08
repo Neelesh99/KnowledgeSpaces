@@ -9,6 +9,7 @@ from llama_index import VectorStoreIndex, LLMPredictor, StorageContext, load_ind
 from slack_bolt import App
 from slack_sdk import WebClient
 
+from compose_graph import compose_graph_hf, compose_graph_openai
 from construct_index import IndexMaker, get_model_config_from_env, get_local_llm_from_huggingface, get_openai_api_llm, \
     get_prompt_helper
 from database_utils import DatabaseConfig, get_db_from_config, save_index, get_index, save_index_to_knowledge_space
@@ -109,21 +110,51 @@ def get_app():
         response = index.query(actual_query)
         say(response.response)
 
+    @app.message("gpt compose")
+    def composed_query(message, say):
+        text = message["text"]
+        regex = "gpt compose knowledge_spaces=\[(.*)\] query (.*)"
+        result = re.search(regex, text)
+        knowledge_spaces_to_save_str = result.group(1)
+        knowledge_spaces_to_save = knowledge_spaces_to_save_str.split(",")
+        indices = []
+        summaries = []
+        for knowledge_space_to_save in knowledge_spaces_to_save:
+            knowledge_space = get_index(knowledge_space_collection, message["user"], knowledge_space_to_save)
+            try:
+                index, _ = full_index_local_knowledge_space_model(
+                    knowledge_space) if model_config.local else full_index_open_ai_knowledge_space_model(knowledge_space)
+            except:
+                index = local_workspace_model() if model_config.local else open_ai_workspace_model()
+            indices.append(index)
+            summaries.append("Some information from a slack workspace")
+        graph_query_engine = compose_graph_hf(indices, summaries) if model_config.local else compose_graph_openai(indices, summaries)
+        response = graph_query_engine.query(result.group(2))
+        say(response.response)
+
     def local_knowledge_space_model(knowledge_space: KnowledgeSpace):
+        index, service_context = full_index_local_knowledge_space_model(knowledge_space)
+        return index.as_query_engine(service_context=service_context)
+
+    def full_index_local_knowledge_space_model(knowledge_space):
         model = get_local_llm_from_huggingface(model_config)
         literal_eval = json.loads(knowledge_space.index_string)
         storage_context = StorageContext.from_dict(literal_eval)
         service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model),
                                                        embed_model=IndexMaker.get_hf_embeddings())
         index = load_index_from_storage(storage_context, service_context=service_context)
-        return index.as_query_engine(service_context=service_context)
+        return index, service_context
 
     def open_ai_knowledge_space_model(knowledge_space: KnowledgeSpace):
+        index, service_context = full_index_open_ai_knowledge_space_model(knowledge_space)
+        return index.as_query_engine(service_context=service_context)
+
+    def full_index_open_ai_knowledge_space_model(knowledge_space):
         model = get_openai_api_llm(model_config)
         storage_context = StorageContext.from_dict(json.loads(knowledge_space.index_string))
         service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model))
         index = load_index_from_storage(storage_context, service_context=service_context)
-        return index.as_query_engine(service_context=service_context)
+        return index, service_context
 
     # local_workspace_model gets a local LLM for the user (if LOCAL=True or not set in env variables)
     def local_workspace_model():
