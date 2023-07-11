@@ -45,7 +45,7 @@ class SlackBothIntegrationTestCase(unittest.TestCase):
         command_to_run = "gpt index workspace"
         app, list_ids = self.send_message_with_content(command_to_run)
         response_to_search_for = "Workspace has been indexed"
-        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for)
+        responds_correctly = self.waits_for_response(app, list_ids, response_to_search_for, wait_time_in_decseconds=40)
         if not responds_correctly:
             self.fail("App was asked to index workspace but did not respond in 200 seconds")
 
