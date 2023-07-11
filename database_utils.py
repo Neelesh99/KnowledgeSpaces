@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from knowledge_space import KnowledgeSpace
+from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
 
 
 class DatabaseConfig:
@@ -43,8 +43,12 @@ def save_index_to_knowledge_space(index: VectorStoreIndex, knowledge_space_name:
     knowledge_collection.replace_one({"user_name": user_name}, knowledge_space.to_dict(), upsert=True)
 
 def get_index(knowledge_collection: Collection, user_name: str, knowledge_space: str):
-    result = knowledge_collection.find_one({"user_name": user_name})
+    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space": knowledge_space})
     return KnowledgeSpace(result["user_name"], knowledge_space, result["index_dict"])
+
+def get_knowledge_space_collection(knowledge_collection: Collection, user_name: str, knowledge_space_collection: str):
+    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space_collection_name": knowledge_space_collection})
+    return KnowledgeSpaceCollection(result["user_name"], knowledge_space_collection, result["knowledge_space_names"])
 
 def slotted_to_dict(obj):
     return {s: getattr(obj, s) for s in obj.__slots__ if hasattr(obj, s)}
