@@ -1,6 +1,6 @@
 
 class KnowledgeSpaceCollection:
-    def __int__(self, user_name: str, knowledge_space_collection_name: str, knowledge_space_names: [str]):
+    def __init__(self, user_name: str, knowledge_space_collection_name: str, knowledge_space_names: [str]):
         self.user_name = user_name
         self.knowledge_space_collection_name = knowledge_space_collection_name
         self.knowledge_space_names = knowledge_space_names
