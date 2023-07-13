@@ -5,8 +5,9 @@ from llama_index import StorageContext, ServiceContext, load_index_from_storage,
 from pydantic import BaseModel
 
 from construct_index import get_model_config_from_env, get_local_llm_from_huggingface, IndexMaker, get_openai_api_llm
-from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space
-from knowledge_space import KnowledgeSpace
+from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space, \
+    save_knowledge_space_collection
+from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
 from packaged_index_utilities import local_knowledge_space_model, model_config, open_ai_knowledge_space_model, \
     local_workspace_model, open_ai_workspace_model
 
@@ -21,11 +22,16 @@ db = get_db_from_config(db_config)
 # Getting knowledgespace collection
 knowledge_space_collection = db.get_collection("knowledge_space")
 
+knowledge_collection_collection = db.get_collection("knowledge_collection")
+
 class Query(BaseModel):
     query: str
 
 class TextIndex(BaseModel):
     text: str
+
+class KnowledgeCollectionUpdate(BaseModel):
+    knowledge_spaces: [str]
 
 @app.get("/")
 async def root():
@@ -49,6 +55,13 @@ async def query_knowledge_space(user: str, knowledge_space: str, text: TextIndex
         text.text)
     save_index_to_knowledge_space(index, knowledge_space, knowledge_space_collection, user)
     return "Indexed"
+
+@app.post("/collection/compile/{user}/{knowledge_collection_name}")
+async def query_knowledge_space(user: str, knowledge_collection_name: str, knowledge_collection_update: KnowledgeCollectionUpdate):
+    save_knowledge_space_collection()
+    collection = KnowledgeSpaceCollection(user, knowledge_collection_name, knowledge_collection_update.knowledge_spaces)
+    save_knowledge_space_collection(knowledge_collection_collection, collection)
+    return "Collection Saved"
 
 
 
