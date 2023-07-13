@@ -61,7 +61,6 @@ packaging==23.1
 pandas==2.0.2
 Pillow==9.5.0
 pluggy==1.2.0
-pydantic==1.10.11
 pydantic-extra-types==2.0.0
 pydantic-settings==2.0.1
 pydantic_core==2.1.2
