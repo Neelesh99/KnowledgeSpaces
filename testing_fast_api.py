@@ -4,9 +4,10 @@ from fastapi import FastAPI
 from llama_index import StorageContext, ServiceContext, load_index_from_storage, LLMPredictor
 from pydantic import BaseModel
 
+from compose_graph import compose_graph_from_knowledge_space_collection
 from construct_index import get_model_config_from_env, get_local_llm_from_huggingface, IndexMaker, get_openai_api_llm
 from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space, \
-    save_knowledge_space_collection
+    save_knowledge_space_collection, get_knowledge_space_collection
 from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
 from packaged_index_utilities import local_knowledge_space_model, model_config, open_ai_knowledge_space_model, \
     local_workspace_model, open_ai_workspace_model
@@ -50,18 +51,22 @@ async def query_knowledge_space(knowledge_space: str, query: Query):
     return {"response": response.response}
 
 @app.post("/index/text/{user}/{knowledge_space}")
-async def query_knowledge_space(user: str, knowledge_space: str, text: TextIndex):
+async def save_knowledge_space(user: str, knowledge_space: str, text: TextIndex):
     index = IndexMaker.get_hf_index_from_text(text.text) if model_config.local else IndexMaker.get_index_from_text(
         text.text)
     save_index_to_knowledge_space(index, knowledge_space, knowledge_space_collection, user)
     return "Indexed"
 
 @app.post("/collection/compile/{user}/{knowledge_collection_name}")
-async def query_knowledge_space(user: str, knowledge_collection_name: str, knowledge_collection_update: KnowledgeCollectionUpdate):
-    save_knowledge_space_collection()
+async def compile_knowledge_collection(user: str, knowledge_collection_name: str, knowledge_collection_update: KnowledgeCollectionUpdate):
     collection = KnowledgeSpaceCollection(user, knowledge_collection_name, knowledge_collection_update.knowledge_spaces)
     save_knowledge_space_collection(knowledge_collection_collection, collection)
     return "Collection Saved"
 
-
+@app.post("/collection/query/{user}/{knowledge_collection_name}")
+async def query_knowledge_collection(user: str, knowledge_collection_name: str, knowledge_query: Query):
+    knowledge_collection = get_knowledge_space_collection(knowledge_collection_collection, user, knowledge_collection_name)
+    graph = compose_graph_from_knowledge_space_collection(model_config, knowledge_collection, knowledge_space_collection)
+    response = graph.query(knowledge_query.query)
+    return {"response": response.response}
 
