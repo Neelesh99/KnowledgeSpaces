@@ -45,8 +45,33 @@ class MyTestCase(unittest.TestCase):
                 json.dumps({"query": "What is the Cadillac Flyboy?"})
             )
             print(response.text)
-            self.assertTrue(response.text.find("The Cadillac Flyboy"))
+            self.assertTrue(response.text.find("The Cadillac Flyboy") != -1)
 
+    @pytest.mark.api
+    def test_will_save_knowledge_collection(self):
+        config = uvicorn.Config("testing_fast_api:app", host="127.0.0.1", port=5000, log_level="info")
+        server = Server(config=config)
+        user = "test_user"
+        with server.run_in_thread():
+            response = requests.post(
+                "http://127.0.0.1:5000/collection/compile/" + user + "/car_knowledge_collection",
+                json.dumps({"knowledge_spaces": ["car_knowledge_space"]})
+            )
+            print(response.text)
+            self.assertEqual(response.text, '"Collection Saved"')
+
+    @pytest.mark.api
+    def test_will_query_knowledge_collection(self):
+        config = uvicorn.Config("testing_fast_api:app", host="127.0.0.1", port=5000, log_level="info")
+        server = Server(config=config)
+        user = "test_user"
+        with server.run_in_thread():
+            response = requests.post(
+                "http://127.0.0.1:5000/collection/query/" + user + "/car_knowledge_collection",
+                json.dumps({"query": "What is the Cadillac Flyboy?"})
+            )
+            print(response.text)
+            self.assertTrue(response.text.find("The Cadillac Flyboy") != -1)
 
 if __name__ == '__main__':
     unittest.main()
