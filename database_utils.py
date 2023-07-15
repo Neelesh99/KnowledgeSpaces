@@ -40,7 +40,7 @@ def save_index(index: VectorStoreIndex, knowledge_collection: Collection, user_n
 
 def save_index_to_knowledge_space(index: VectorStoreIndex, knowledge_space_name: str, knowledge_collection: Collection, user_name: str):
     knowledge_space = KnowledgeSpace(user_name, knowledge_space_name, json.dumps(index.storage_context.to_dict()))
-    knowledge_collection.replace_one({"user_name": user_name, "knowledge_space": knowledge_space}, knowledge_space.to_dict(), upsert=True)
+    knowledge_collection.replace_one({"user_name": user_name, "knowledge_space_name": knowledge_space_name}, knowledge_space.to_dict(), upsert=True)
 
 def save_knowledge_space_collection(knowledge_collection_collection: Collection, knowledge_space_collection: KnowledgeSpaceCollection):
     knowledge_collection_collection.replace_one(
@@ -53,7 +53,7 @@ def save_knowledge_space_collection(knowledge_collection_collection: Collection,
     )
 
 def get_index(knowledge_collection: Collection, user_name: str, knowledge_space: str):
-    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space": knowledge_space})
+    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space_name": knowledge_space})
     return KnowledgeSpace(result["user_name"], knowledge_space, result["index_dict"])
 
 def get_knowledge_space_collection(knowledge_collection: Collection, user_name: str, knowledge_space_collection: str):

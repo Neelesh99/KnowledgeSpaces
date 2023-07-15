@@ -34,6 +34,19 @@ class MyTestCase(unittest.TestCase):
             print(response.text)
             self.assertEqual('"Indexed"', response.text)
 
+    @pytest.mark.api
+    def test_will_query_knowledge_space(self):
+        config = uvicorn.Config("testing_fast_api:app", host="127.0.0.1", port=5000, log_level="info")
+        server = Server(config=config)
+        user = "test_user"
+        with server.run_in_thread():
+            response = requests.post(
+                "http://127.0.0.1:5000/query/knowledge_space/" + user + "/car_knowledge_space",
+                json.dumps({"query": "What is the Cadillac Flyboy?"})
+            )
+            print(response.text)
+            self.assertTrue(response.text.find("The Cadillac Flyboy"))
+
 
 if __name__ == '__main__':
     unittest.main()

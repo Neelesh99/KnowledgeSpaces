@@ -32,16 +32,17 @@ class TextIndex(BaseModel):
     text: str
 
 class KnowledgeCollectionUpdate(BaseModel):
-    knowledge_spaces: [str]
+    knowledge_spaces: list[str]
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 
-@app.post("/query/knowledge_space/{knowledge_space}")
-async def query_knowledge_space(knowledge_space: str, query: Query):
-    knowledge_space = get_index(knowledge_space_collection, "test_server", knowledge_space)
+@app.post("/query/knowledge_space/{user}/{knowledge_space}")
+async def query_knowledge_space(user: str, knowledge_space: str, query: Query):
+    print("Hello")
+    knowledge_space = get_index(knowledge_space_collection, user, knowledge_space)
     try:
         index = local_knowledge_space_model(
             knowledge_space) if model_config.local else open_ai_knowledge_space_model(knowledge_space)
