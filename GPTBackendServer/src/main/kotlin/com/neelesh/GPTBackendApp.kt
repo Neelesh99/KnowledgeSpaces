@@ -12,8 +12,11 @@ import org.http4k.contract.security.ApiKeySecurity
 import org.http4k.core.*
 import org.http4k.lens.Query
 import org.http4k.lens.int
+import org.http4k.routing.ResourceLoader.Companion.Classpath
+import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
+import org.http4k.routing.static
 import org.http4k.security.InsecureCookieBasedOAuthPersistence
 import org.http4k.security.OAuthProvider
 import org.http4k.security.google
@@ -34,6 +37,15 @@ val oauthProvider = OAuthProvider.google(
     Uri.of("http://localhost:9000/oauth/callback"),
     oAuthPersistence
 )
+
+private fun routingHttpHandler2() = "/docs" bind static(Classpath("META-INF/resources/webjars/swagger-ui/3.25.2"))
+
+private fun routingHttpHandler(descriptionPath: String) = "docs" bind Method.GET to {
+    Response(Status.FOUND).header("Location", "/docs/index.html?url=$descriptionPath")
+}
+
+private const val API_DESCRIPTION_PATH = "/contract/api/v1/swagger.json"
+
 val GPTUserApp: HttpHandler = routes(
     "/ping" bind Method.GET to {
         Response(Status.OK).body("pong")
@@ -55,6 +67,10 @@ val GPTUserApp: HttpHandler = routes(
         // Add contract routes
         routes += ExampleContractRoute()
     },
+
+    routingHttpHandler(API_DESCRIPTION_PATH),
+
+    routingHttpHandler2(),
 
     "/oauth" bind routes(
         "/" bind Method.GET to oauthProvider.authFilter.then { Response(Status.OK).body("hello!") },
