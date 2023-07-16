@@ -3,6 +3,9 @@ package com.neelesh
 import com.neelesh.formats.JacksonMessage
 import com.neelesh.formats.jacksonMessageLens
 import com.neelesh.routes.ExampleContractRoute
+import com.neelesh.security.InMemoryOAuthPersistence
+import com.neelesh.security.InsecureTokenChecker
+import com.neelesh.security.TokenChecker
 import org.http4k.client.JavaHttpClient
 import org.http4k.contract.bind
 import org.http4k.contract.contract
@@ -20,6 +23,7 @@ import org.http4k.routing.static
 import org.http4k.security.InsecureCookieBasedOAuthPersistence
 import org.http4k.security.OAuthProvider
 import org.http4k.security.google
+import java.time.Clock
 
 // Google OAuth Example
 // Browse to: http://localhost:9000/oauth - you'll be redirected to google for authentication
@@ -28,7 +32,7 @@ val googleClientSecret = "myGoogleClientSecret"
 
 // this is a test implementation of the OAuthPersistence interface, which should be
 // implemented by application developers
-val oAuthPersistence = InsecureCookieBasedOAuthPersistence("Google")
+val oAuthPersistence = InMemoryOAuthPersistence(Clock.systemUTC(), InsecureTokenChecker)
 
 // pre-defined configuration exist for common OAuth providers
 val oauthProvider = OAuthProvider.google(
