@@ -13,5 +13,5 @@ interface TokenChecker {
  * We aren't doing any crypto in this example, so just check the key for the prefix.
  */
 object InsecureTokenChecker : TokenChecker {
-    override fun check(accessToken: AccessToken) = accessToken.value.startsWith("ACCESS_TOKEN")
+    override fun check(accessToken: AccessToken) = (accessToken.expiresIn ?: 0) > 0
 }

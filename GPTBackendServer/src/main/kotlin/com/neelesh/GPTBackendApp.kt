@@ -75,7 +75,9 @@ val GPTUserApp: HttpHandler = routes(
     routingHttpHandler2(),
 
     "/oauth" bind routes(
-        "/" bind Method.GET to oauthProvider.authFilter.then { Response(Status.OK).body("hello!") },
+        "/" bind Method.GET to oauthProvider.authFilter.then {
+            Response(Status.OK).body("hello!")
+                                                             },
         "/callback" bind Method.GET to oauthProvider.callback
     )
 )
