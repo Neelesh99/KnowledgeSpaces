@@ -5,7 +5,6 @@ import com.neelesh.formats.jacksonMessageLens
 import com.neelesh.routes.ExampleContractRoute
 import com.neelesh.security.InMemoryOAuthPersistence
 import com.neelesh.security.InsecureTokenChecker
-import com.neelesh.security.TokenChecker
 import org.http4k.client.JavaHttpClient
 import org.http4k.contract.bind
 import org.http4k.contract.contract
@@ -16,11 +15,9 @@ import org.http4k.core.*
 import org.http4k.lens.Query
 import org.http4k.lens.int
 import org.http4k.routing.ResourceLoader.Companion.Classpath
-import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.routing.static
-import org.http4k.security.InsecureCookieBasedOAuthPersistence
 import org.http4k.security.OAuthProvider
 import org.http4k.security.google
 import java.time.Clock
@@ -39,7 +36,8 @@ val oauthProvider = OAuthProvider.google(
     JavaHttpClient(),
     Credentials(googleClientId, googleClientSecret),
     Uri.of("http://localhost:9000/oauth/callback"),
-    oAuthPersistence
+    oAuthPersistence,
+    scopes = listOf("openid", "email")
 )
 
 private fun routingHttpHandler2() = "/docs" bind static(Classpath("META-INF/resources/webjars/swagger-ui/3.25.2"))
