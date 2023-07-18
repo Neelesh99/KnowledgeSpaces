@@ -37,7 +37,7 @@ val oauthProvider = OAuthProvider.google(
     Credentials(googleClientId, googleClientSecret),
     Uri.of("http://localhost:9000/oauth/callback"),
     oAuthPersistence,
-    scopes = listOf("openid", "email")
+    scopes = listOf("openid", "email", "name")
 )
 
 private fun routingHttpHandler2() = "/docs" bind static(Classpath("META-INF/resources/webjars/swagger-ui/3.25.2"))
