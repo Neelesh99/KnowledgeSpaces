@@ -14,6 +14,7 @@ import org.http4k.contract.openapi.ApiInfo
 import org.http4k.contract.openapi.v3.OpenApi3
 import org.http4k.contract.security.ApiKeySecurity
 import org.http4k.core.*
+import org.http4k.core.cookie.cookie
 import org.http4k.lens.Query
 import org.http4k.lens.int
 import org.http4k.routing.ResourceLoader.Companion.Classpath
@@ -24,6 +25,8 @@ import org.http4k.security.OAuthPersistence
 import org.http4k.security.OAuthProvider
 import org.http4k.security.google
 import org.litote.kmongo.KMongo
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.time.Clock
 
@@ -90,7 +93,9 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence): HttpHandler {
 
         "/oauth" bind routes(
             "/" bind Method.GET to oauthProvider.authFilter.then {
-                Response(Status.OK).body("hello!")
+                val cookie = it.cookie("securityServerAuth")
+                val user = userCollection.findOne(User::cookieSwapString eq cookie!!.value)!!
+                Response(Status.OK).body(user.toDtoJson().toPrettyString())
             },
             "/callback" bind Method.GET to oauthProvider.callback
         )
