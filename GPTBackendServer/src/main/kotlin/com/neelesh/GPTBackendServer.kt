@@ -9,7 +9,7 @@ import org.http4k.server.asServer
 
 
 fun main() {
-    val printingApp: HttpHandler = PrintRequest().then(GPTUserApp)
+    val printingApp: HttpHandler = PrintRequest().then(GPTUserApp(mongoOAuthPersistence))
 
     val server = printingApp.asServer(Undertow(9000)).start()
 

@@ -44,20 +44,20 @@ class MongoBasedOAuthPersistence(
     override fun assignOriginalUri(redirect: Response, originalUri: Uri): Response = redirect.cookie(expiring(originalUriName, originalUri.toString()))
 
     override fun assignToken(request: Request, redirect: Response, accessToken: AccessToken, idToken: IdToken?) =
-        idToken?.let { idToken ->
+        idToken?.let { idTokenRealised ->
             UUID.randomUUID().let {
-                val jsonString = Base64.getDecoder().decode(idToken.value.split(".").get(1)).toString(Charset.defaultCharset())
+                val jsonString = Base64.getDecoder().decode(idTokenRealised.value.split(".").get(1)).toString(Charset.defaultCharset())
                 val json = Jackson.parse(jsonString)
                 val ifFoundUser = mongoUserCollection.findOne(User::username eq json.get("name").textValue())
                 if (ifFoundUser is User) {
-                    val editedUser = ifFoundUser.copy(cookieSwapString = it.toString(), token = accessToken)
+                    val editedUser = ifFoundUser.copy(cookieSwapString = it.toString(), token = BasicAccessToken.fromAccessToken(accessToken))
                     mongoUserCollection.replaceOne(User::username eq json.get("name").textValue(), editedUser)
                 } else {
                     mongoUserCollection.insertOne( User(
                         json.get("name").textValue(),
                         json.get("email").textValue(),
                         it.toString(),
-                        accessToken
+                        BasicAccessToken.fromAccessToken(accessToken)
                     ))
                 }
                 redirect
