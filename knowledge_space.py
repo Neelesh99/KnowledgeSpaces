@@ -1,37 +1,37 @@
 
-class KnowledgeSpaceCollection:
-    def __init__(self, user_name: str, knowledge_space_collection_name: str, knowledge_space_names: [str]):
-        self.user_name = user_name
-        self.knowledge_space_collection_name = knowledge_space_collection_name
-        self.knowledge_space_names = knowledge_space_names
+class KnowledgeSpace:
+    def __init__(self, id: str, name: str, files: [str]):
+        self.id = id
+        self.name = name
+        self.files = files
 
     def __eq__(self, other):
-        if type(other) == KnowledgeSpace:
-            return other.user_name == self.user_name and other.knowledge_space_collection_name == self.knowledge_space_collection_name and other.knowledge_space_names == self.knowledge_space_names
+        if type(other) == KnowledgeFile:
+            return other.id == self.id and other.name == self.name and other.files == self.files
         return False
 
     def to_dict(self):
         return {
-            "user_name": self.user_name,
-            "knowledge_space_collection_name": self.knowledge_space_collection_name,
-            "knowledge_space_names": self.knowledge_space_names
+            "id": self.id,
+            "name": self.name,
+            "files": self.files
         }
 
-class KnowledgeSpace:
+class KnowledgeFile:
 
-    def __init__(self, user_name: str, knowledge_space_name: str, index_dict: str):
-        self.knowledge_space_name = knowledge_space_name
-        self.user_name = user_name
-        self.index_string = index_dict
+    def __init__(self, email: str, name: str, indexDict: str):
+        self.name = name
+        self.email = email
+        self.indexDict = indexDict
 
     def __eq__(self, other):
-        if type(other) == KnowledgeSpace:
-            return other.user_name == self.user_name and other.index_string == self.index_string and other.knowledge_space_name == self.knowledge_space_name
+        if type(other) == KnowledgeFile:
+            return other.id == self.email and other.indexDict == self.indexDict and other.name == self.name
         return False
 
     def to_dict(self):
         return {
-            "user_name": self.user_name,
-            "knowledge_space_name": self.knowledge_space_name,
-            "index_dict": self.index_string
+            "email": self.email,
+            "name": self.name,
+            "indexDict": self.indexDict
         }

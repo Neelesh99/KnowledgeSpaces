@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 from compose_graph import compose_graph_hf, compose_graph_from_knowledge_space_collection
 from construct_index import IndexMaker, get_model_config_from_env
-from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
+from knowledge_space import KnowledgeFile, KnowledgeSpace
 
 
 class ComposeGraphTestCase(unittest.TestCase):
@@ -30,10 +30,10 @@ class ComposeGraphTestCase(unittest.TestCase):
         index_2 = IndexMaker.get_hf_index_from_text(info_index_2)
         index_1_str = json.dumps(index_1.storage_context.to_dict())
         index_2_str = json.dumps(index_2.storage_context.to_dict())
-        knowledge_space_1 = KnowledgeSpace("some_user", "first_space", index_1_str)
-        knowledge_space_2 = KnowledgeSpace("some_user", "second_space", index_2_str)
+        knowledge_space_1 = KnowledgeFile("some_user", "first_space", index_1_str)
+        knowledge_space_2 = KnowledgeFile("some_user", "second_space", index_2_str)
 
-        knowledge_space_collection = KnowledgeSpaceCollection(
+        knowledge_space_collection = KnowledgeSpace(
             "some_user",
             "some_knowledge_space_collection_name",
             ["first_space", "second_space"]

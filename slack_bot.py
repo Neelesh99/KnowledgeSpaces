@@ -13,7 +13,7 @@ from compose_graph import compose_graph_hf, compose_graph_openai
 from construct_index import IndexMaker, get_model_config_from_env, get_local_llm_from_huggingface, get_openai_api_llm, \
     get_prompt_helper
 from database_utils import DatabaseConfig, get_db_from_config, save_index, get_index, save_index_to_knowledge_space
-from knowledge_space import KnowledgeSpace
+from knowledge_space import KnowledgeFile
 
 # Required to authenticate into slack
 ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -132,26 +132,26 @@ def get_app():
         response = graph_query_engine.query(result.group(2))
         say(response.response)
 
-    def local_knowledge_space_model(knowledge_space: KnowledgeSpace):
+    def local_knowledge_space_model(knowledge_space: KnowledgeFile):
         index, service_context = full_index_local_knowledge_space_model(knowledge_space)
         return index.as_query_engine(service_context=service_context)
 
     def full_index_local_knowledge_space_model(knowledge_space):
         model = get_local_llm_from_huggingface(model_config)
-        literal_eval = json.loads(knowledge_space.index_string)
+        literal_eval = json.loads(knowledge_space.indexDict)
         storage_context = StorageContext.from_dict(literal_eval)
         service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model),
                                                        embed_model=IndexMaker.get_hf_embeddings())
         index = load_index_from_storage(storage_context, service_context=service_context)
         return index, service_context
 
-    def open_ai_knowledge_space_model(knowledge_space: KnowledgeSpace):
+    def open_ai_knowledge_space_model(knowledge_space: KnowledgeFile):
         index, service_context = full_index_open_ai_knowledge_space_model(knowledge_space)
         return index.as_query_engine(service_context=service_context)
 
     def full_index_open_ai_knowledge_space_model(knowledge_space):
         model = get_openai_api_llm(model_config)
-        storage_context = StorageContext.from_dict(json.loads(knowledge_space.index_string))
+        storage_context = StorageContext.from_dict(json.loads(knowledge_space.indexDict))
         service_context = ServiceContext.from_defaults(llm_predictor=LLMPredictor(llm=model))
         index = load_index_from_storage(storage_context, service_context=service_context)
         return index, service_context

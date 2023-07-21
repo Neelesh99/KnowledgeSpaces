@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, Mock
 from pymongo.results import InsertOneResult
 
 from database_utils import DatabaseConfig, get_db_from_config, save_index, slotted_to_dict, get_index
-from knowledge_space import KnowledgeSpace
+from knowledge_space import KnowledgeFile
 
 
 class DatabaseUtilsTestCase(unittest.TestCase):
@@ -35,13 +35,13 @@ class DatabaseUtilsTestCase(unittest.TestCase):
         storage_context = Mock()
         index.storage_context = storage_context
         storage_context.to_dict = MagicMock(return_value={})
-        expected_knowledge_space = KnowledgeSpace("some_user", "my_knowledge_space", "{}")
+        expected_knowledge_space = KnowledgeFile("some_user", "my_knowledge_space", "{}")
         save_index(index, collection, "some_user")
         collection.replace_one.assert_called_with({"user_name": "some_user"}, expected_knowledge_space.to_dict(), upsert=True)
 
     def test_get_index_will_get_KnowledgeSpace_for_user(self):
         collection = Mock()
-        space = KnowledgeSpace("some_user", "my_knowledge_space", "{}")
+        space = KnowledgeFile("some_user", "my_knowledge_space", "{}")
         collection.find_one = MagicMock(return_value=space.to_dict())
         actual_space = get_index(collection, "some_user", "my_knowledge_space")
         self.assertEqual(space, actual_space)

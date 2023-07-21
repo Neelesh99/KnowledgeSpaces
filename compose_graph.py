@@ -5,22 +5,22 @@ from pymongo.collection import Collection
 from construct_index import IndexMaker, get_local_llm_from_huggingface, get_model_config_from_env, get_openai_api_llm, \
     ModelConfig
 from database_utils import get_index
-from knowledge_space import KnowledgeSpaceCollection
+from knowledge_space import KnowledgeSpace
 from packaged_index_utilities import full_index_local_knowledge_space_model, full_index_open_ai_knowledge_space_model, \
     local_workspace_model, open_ai_workspace_model
 
 
 def compose_graph_from_knowledge_space_collection(
         model_config: ModelConfig,
-        knowledge_space_collection: KnowledgeSpaceCollection,
+        knowledge_space_collection: KnowledgeSpace,
         knowledge_space_mongo_collection: Collection
 ):
     knowledge_spaces = []
-    for name in knowledge_space_collection.knowledge_space_names:
+    for name in knowledge_space_collection.files:
         knowledge_spaces.append(
             get_index(
                 knowledge_space_mongo_collection,
-                knowledge_space_collection.user_name,
+                knowledge_space_collection.id,
                 name
             ))
     indices = []

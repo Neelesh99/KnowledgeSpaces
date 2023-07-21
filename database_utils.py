@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
+from knowledge_space import KnowledgeFile, KnowledgeSpace
 
 
 class DatabaseConfig:
@@ -35,30 +35,30 @@ def get_db_from_config(config: DatabaseConfig) -> Database:
     client = MongoClient(config.connection_string)
     return client[config.db_name]
 
-def save_index(index: VectorStoreIndex, knowledge_collection: Collection, user_name: str):
-    save_index_to_knowledge_space(index, "my_knowledge_space", knowledge_collection, user_name)
+def save_index(index: VectorStoreIndex, knowledge_collection: Collection, email: str):
+    save_index_to_knowledge_space(index, "my_knowledge_space", knowledge_collection, email)
 
-def save_index_to_knowledge_space(index: VectorStoreIndex, knowledge_space_name: str, knowledge_collection: Collection, user_name: str):
-    knowledge_space = KnowledgeSpace(user_name, knowledge_space_name, json.dumps(index.storage_context.to_dict()))
-    knowledge_collection.replace_one({"user_name": user_name, "knowledge_space_name": knowledge_space_name}, knowledge_space.to_dict(), upsert=True)
+def save_index_to_knowledge_space(index: VectorStoreIndex, name: str, knowledge_collection: Collection, email: str):
+    knowledge_file = KnowledgeFile(email, name, json.dumps(index.storage_context.to_dict()))
+    knowledge_collection.replace_one({"email": email, "name": name}, knowledge_file.to_dict(), upsert=True)
 
-def save_knowledge_space_collection(knowledge_collection_collection: Collection, knowledge_space_collection: KnowledgeSpaceCollection):
-    knowledge_collection_collection.replace_one(
+def save_knowledge_space_collection(knowledge_space_collection: Collection, knowledge_space: KnowledgeSpace):
+    knowledge_space_collection.replace_one(
         {
-            "user_name": knowledge_space_collection.user_name,
-            "knowledge_space_collection_name": knowledge_space_collection.knowledge_space_collection_name
+            "id": knowledge_space.id,
+            "name": knowledge_space.name
          },
-        knowledge_space_collection.to_dict(),
+        knowledge_space.to_dict(),
         upsert=True
     )
 
-def get_index(knowledge_collection: Collection, user_name: str, knowledge_space: str):
-    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space_name": knowledge_space})
-    return KnowledgeSpace(result["user_name"], knowledge_space, result["index_dict"])
+def get_index(knowledge_collection: Collection, email: str, name: str):
+    result = knowledge_collection.find_one({"email": email, "name": name})
+    return KnowledgeFile(result["email"], name, result["indexDict"])
 
-def get_knowledge_space_collection(knowledge_collection: Collection, user_name: str, knowledge_space_collection: str):
-    result = knowledge_collection.find_one({"user_name": user_name, "knowledge_space_collection_name": knowledge_space_collection})
-    return KnowledgeSpaceCollection(result["user_name"], knowledge_space_collection, result["knowledge_space_names"])
+def get_knowledge_space_collection(knowledge_collection: Collection, id: str, name: str):
+    result = knowledge_collection.find_one({"id": id, "name": name})
+    return KnowledgeSpace(result["id"], name, result["files"])
 
 def slotted_to_dict(obj):
     return {s: getattr(obj, s) for s in obj.__slots__ if hasattr(obj, s)}

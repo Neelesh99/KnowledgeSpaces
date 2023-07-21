@@ -8,7 +8,7 @@ from compose_graph import compose_graph_from_knowledge_space_collection
 from construct_index import get_model_config_from_env, get_local_llm_from_huggingface, IndexMaker, get_openai_api_llm
 from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space, \
     save_knowledge_space_collection, get_knowledge_space_collection
-from knowledge_space import KnowledgeSpace, KnowledgeSpaceCollection
+from knowledge_space import KnowledgeFile, KnowledgeSpace
 from packaged_index_utilities import local_knowledge_space_model, model_config, open_ai_knowledge_space_model, \
     local_workspace_model, open_ai_workspace_model
 
@@ -60,7 +60,7 @@ async def save_knowledge_space(user: str, knowledge_space: str, text: TextIndex)
 
 @app.post("/collection/compile/{user}/{knowledge_collection_name}")
 async def compile_knowledge_collection(user: str, knowledge_collection_name: str, knowledge_collection_update: KnowledgeCollectionUpdate):
-    collection = KnowledgeSpaceCollection(user, knowledge_collection_name, knowledge_collection_update.knowledge_spaces)
+    collection = KnowledgeSpace(user, knowledge_collection_name, knowledge_collection_update.knowledge_spaces)
     save_knowledge_space_collection(knowledge_collection_collection, collection)
     return "Collection Saved"
 
