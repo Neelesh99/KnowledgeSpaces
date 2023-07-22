@@ -36,12 +36,14 @@ test {
 }
 
 dependencies {
+    implementation(platform("org.http4k:http4k-bom:${http4kVersion}"))
     implementation("org.http4k:http4k-client-okhttp:${http4kVersion}")
     implementation("org.http4k:http4k-contract:${http4kVersion}")
     implementation("org.http4k:http4k-core:${http4kVersion}")
     implementation("org.http4k:http4k-format-jackson:${http4kVersion}")
     implementation("org.http4k:http4k-security-oauth:${http4kVersion}")
     implementation("org.http4k:http4k-server-undertow:${http4kVersion}")
+    implementation("org.http4k:http4k-multipart:${http4kVersion}t")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("org.webjars:swagger-ui:3.25.2")
     implementation("org.litote.kmongo:kmongo:4.9.0")
