@@ -1,5 +1,6 @@
 package com.neelesh
 
+import com.neelesh.config.Dependencies
 import com.neelesh.formats.JacksonMessage
 import com.neelesh.formats.jacksonMessageLens
 import com.neelesh.routes.ExampleContractRoute
@@ -56,7 +57,7 @@ private fun routingHttpHandler(descriptionPath: String) = "docs" bind Method.GET
 
 private const val API_DESCRIPTION_PATH = "/contract/api/v1/swagger.json"
 
-fun GPTUserApp(oAuthPersistence: OAuthPersistence): HttpHandler {
+fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): HttpHandler {
 
     val oauthProvider = OAuthProvider.google(
         JavaHttpClient(),

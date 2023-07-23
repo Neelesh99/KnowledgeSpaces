@@ -1,5 +1,7 @@
 package com.neelesh
 
+import com.neelesh.config.Dependencies
+import org.http4k.client.OkHttp
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -14,7 +16,7 @@ class GPTBackendServerTest {
     fun `Ping test`() {
         assertEquals(
             Response(OK).body("pong"),
-            GPTUserApp(InsecureCookieBasedOAuthPersistence("cookie"))(Request(GET, "/ping")))
+            GPTUserApp(InsecureCookieBasedOAuthPersistence("cookie"), Dependencies(OkHttp()))(Request(GET, "/ping")))
     }
 
 }
