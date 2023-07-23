@@ -20,6 +20,7 @@ class LLMIndexRequestBuilderTest {
         val email = "someEmail"
         val knowledgeFileTarget = "someFileName"
         val byteInputStream = "someText".byteInputStream()
+        val byteInputStreamForExpect = "someText".byteInputStream()
         val blobs = listOf<Pair<BlobReference, InputStream>>(
             BlobReference("someBlobId", DataType.PLAIN_TEXT, "someInfo.txt") to
                     byteInputStream
@@ -36,7 +37,7 @@ class LLMIndexRequestBuilderTest {
             .plus("someInfo.txt" to MultipartFormFile(
                 "someInfo.txt",
                 ContentType.OCTET_STREAM,
-                byteInputStream
+                byteInputStreamForExpect
             ))
 
         val actual = LLMIndexRequestBuilder.buildIndexRequest(email, knowledgeFileTarget, blobs)
