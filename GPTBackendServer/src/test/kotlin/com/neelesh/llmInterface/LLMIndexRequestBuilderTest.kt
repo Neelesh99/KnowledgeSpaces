@@ -45,7 +45,7 @@ class LLMIndexRequestBuilderTest {
         Assertions.assertEquals(String(actual.file("indexRequest.json")!!.content.readAllBytes()), String(expectedForm.file("indexRequest.json")!!.content.readAllBytes()))
         val readAllBytes = actual.file("someInfo.txt")!!.content.readAllBytes()
         val readAllBytes1 = expectedForm.file("someInfo.txt")!!.content.readAllBytes()
-        Assertions.assertEquals(readAllBytes, readAllBytes1)
+        Assertions.assertEquals(String(readAllBytes), String(readAllBytes1))
 
     }
 
