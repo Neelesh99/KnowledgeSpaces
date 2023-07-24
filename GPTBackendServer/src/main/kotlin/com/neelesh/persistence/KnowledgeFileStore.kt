@@ -8,4 +8,6 @@ interface KnowledgeFileStore {
 
     fun getKnowledgeFile(knowledgeFileId: String, email: String) : Either<Exception, KnowledgeFile>
 
+    fun saveKnowledgeFile(knowledgeFile: KnowledgeFile) : Either<Exception, KnowledgeFile>
+
 }
