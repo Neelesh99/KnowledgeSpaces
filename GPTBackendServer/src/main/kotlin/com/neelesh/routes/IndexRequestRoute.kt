@@ -1,5 +1,6 @@
 package com.neelesh.routes
 
+import com.neelesh.llm.IndexRequestHandler
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.*
@@ -20,10 +21,17 @@ object IndexRequestRoute {
     } bindContract Method.POST
 
     // note that because we don't have any dynamic parameters, we can use a HttpHandler instance instead of a function
-    private val echo: HttpHandler = { request: Request ->
+    private fun echo(indexRequestHandler: IndexRequestHandler): HttpHandler = { request: Request ->
         val received: SimpleIndexRequest = simpleIndexRequestLens(request)
-        Response(Status.OK).with(simpleIndexRequestLens of received)
+        val result = indexRequestHandler.handle(received)
+        result.fold(
+            {
+                Response(Status.INTERNAL_SERVER_ERROR).body(it.message ?: "Internal Server Error")
+            }, {
+                Response(Status.OK).body(it)
+            }
+        )
     }
 
-    operator fun invoke(): ContractRoute = spec to echo
+    operator fun invoke(indexRequestHandler: IndexRequestHandler): ContractRoute = spec to echo(indexRequestHandler)
 }

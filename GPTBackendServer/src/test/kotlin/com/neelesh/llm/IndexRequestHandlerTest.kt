@@ -9,16 +9,12 @@ import com.neelesh.storage.BlobStore
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import junit.framework.TestCase.fail
 import org.http4k.core.*
 import org.http4k.core.Request
 import org.http4k.format.Jackson
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.lang.Exception
 
 class IndexRequestHandlerTest {
 

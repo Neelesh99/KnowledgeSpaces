@@ -46,7 +46,7 @@ class IndexRequestsAcceptanceTest {
         ))
         val blobReference = BlobReference("someBlobId",  DataType.PLAIN_TEXT,"someFile.txt")
         blobStore.storeBlob(blobReference, "someText".byteInputStream())
-        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/sendRequest")
+        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/sendRequest?api=42")
             .body("{\"email\":\"someEmail\",\"knowledgeFileTarget\":\"someKnowledgeFileId\"}")
 
         val testClient = OkHttp()
@@ -60,11 +60,12 @@ class IndexRequestsAcceptanceTest {
         assertEquals(Status.OK, response.status)
         assertEquals(expectedIndexRequest, stubLlmApp.savedIndexRequests.get(0).first)
         assertFormFileIsTheSame(expectedFile, stubLlmApp.savedIndexRequests.get(0).second.file("someFile.txt")!!)
+        assertEquals("someRunId", response.bodyString())
     }
 
     fun assertFormFileIsTheSame(expected: MultipartFormFile, actual: MultipartFormFile) {
         assertEquals(expected.filename, actual.filename)
-        assertEquals(expected.contentType, actual.contentType)
+        assertEquals(expected.contentType.value, actual.contentType.value)
         val consumedExpected = String(expected.content.readAllBytes())
         val consumedActual = String(actual.content.readAllBytes())
         assertEquals(consumedExpected, consumedActual)

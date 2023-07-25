@@ -8,7 +8,7 @@ import org.http4k.routing.routes
 
 class StubLLMApp(private val responsesForIndexRequests: List<Pair<String, Response>>){
 
-    val defaultResponseForIndexRequest = Response(Status.OK).body("{\"status\":\"done\"}")
+    val defaultResponseForIndexRequest = Response(Status.OK).body("{\"runId\":\"someRunId\"}")
 
     val savedIndexRequests = mutableListOf<Pair<IndexRequest, MultipartFormBody>>()
 
