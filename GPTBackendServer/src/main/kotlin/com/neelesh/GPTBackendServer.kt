@@ -1,18 +1,29 @@
 package com.neelesh
 
 import com.neelesh.config.Dependencies
+import com.neelesh.model.KnowledgeFile
+import com.neelesh.persistence.MongoBackedKnowledgeFileStore
+import com.neelesh.storage.InMemoryBlobStore
 import org.http4k.core.HttpHandler
 import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters.PrintRequest
 import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import org.http4k.client.OkHttp
-
+import org.litote.kmongo.KMongo
+import org.litote.kmongo.getCollection
+import java.io.File
 
 
 fun main() {
     val client: HttpHandler = OkHttp()
-    val dependencies = Dependencies(client)
+    val mongoClient = KMongo.createClient("mongodb+srv://firehzb:$mongodbPass@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
+    val db = mongoClient.getDatabase("myStuff")
+    val dependencies = Dependencies(
+        client,
+        InMemoryBlobStore(File("/storage")),
+        MongoBackedKnowledgeFileStore(db.getCollection<KnowledgeFile>("knowledgeFileCollection"))
+    )
     val printingApp: HttpHandler = PrintRequest().then(GPTUserApp(mongoOAuthPersistence, dependencies))
 
     val server = printingApp.asServer(Undertow(9000)).start()

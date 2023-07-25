@@ -33,11 +33,6 @@ import java.time.Clock
 
 // Google OAuth Example
 // Browse to: http://localhost:9000/oauth - you'll be redirected to google for authentication
-val googleClientId = "970852448416-rr75hf4iprd42ouvaheqtnp6egihir9a.apps.googleusercontent.com"
-val googleClientSecret = "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"
-
-val mongodbPass="qiCQHOxTkSXFG6zX"
-val mongodbUser="firehzb"
 
 // this is a test implementation of the OAuthPersistence interface, which should be
 // implemented by application developers
