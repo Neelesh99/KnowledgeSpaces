@@ -1,12 +1,10 @@
-package com.neelesh.llmInterface
+package com.neelesh.llm
 
-import com.neelesh.llm.LLMIndexRequestBuilder
 import com.neelesh.model.BlobReference
 import com.neelesh.model.DataType
 import com.neelesh.model.IndexRequest
 import com.neelesh.model.UserDetails
 import org.http4k.core.ContentType
-import org.http4k.core.MultipartEntity
 import org.http4k.core.MultipartFormBody
 import org.http4k.lens.MultipartFormFile
 import org.junit.jupiter.api.Assertions

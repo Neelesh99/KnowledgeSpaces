@@ -4,10 +4,7 @@ import com.neelesh.GPTUserApp
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
 import com.neelesh.config.Dependencies
-import com.neelesh.model.BlobReference
-import com.neelesh.model.DataType
-import com.neelesh.model.IndexRequest
-import com.neelesh.model.UserDetails
+import com.neelesh.model.*
 import com.neelesh.storage.BlobStore
 import com.neelesh.storage.InMemoryBlobStore
 import org.http4k.client.OkHttp
@@ -34,12 +31,22 @@ class IndexRequestsAcceptanceTest {
         InMemoryBlobStore(testingDirectory)
     }
 
+    private val inMemoryKnowledgeFileStore = InMemoryKnowledgeFileStore(emptyList())
+
     @Test
     fun `will post index request to server and it will be sent to llm for indexing`() {
         val stubLlmApp = StubLLMApp(emptyList())
         val server = setupClient(stubLlmApp, 0)
-
-        val request = Request(Method.POST, "http://localhost:${server.port()}/api/v1/sendRequest")
+        inMemoryKnowledgeFileStore.saveKnowledgeFile(KnowledgeFile(
+            "someKnowledgeFileId",
+            "someEmail",
+            "someKnowledgeFileName",
+            listOf("someBlobId"),
+            "{}"
+        ))
+        val blobReference = BlobReference("someBlobId",  DataType.PLAIN_TEXT,"someFile.txt")
+        blobStore.storeBlob(blobReference, "someText".byteInputStream())
+        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/sendRequest")
             .body("{\"email\":\"someEmail\",\"knowledgeFileTarget\":\"someKnowledgeFileId\"}")
 
         val testClient = OkHttp()
@@ -47,12 +54,12 @@ class IndexRequestsAcceptanceTest {
         val expectedIndexRequest = IndexRequest(
             UserDetails("someEmail"),
             "someKnowledgeFileId",
-            listOf(BlobReference("someBlobId", DataType.PLAIN_TEXT, "someBlob.txt"))
+            listOf(BlobReference("someBlobId", DataType.PLAIN_TEXT, "someFile.txt"))
         )
-        val expectedFile = MultipartFormFile("someBlob.txt", ContentType.OCTET_STREAM, "someText".byteInputStream())
+        val expectedFile = MultipartFormFile("someFile.txt", ContentType.OCTET_STREAM, "someText".byteInputStream())
         assertEquals(Status.OK, response.status)
         assertEquals(expectedIndexRequest, stubLlmApp.savedIndexRequests.get(0).first)
-        assertFormFileIsTheSame(expectedFile, stubLlmApp.savedIndexRequests.get(0).second.file("someBlob.txt")!!)
+        assertFormFileIsTheSame(expectedFile, stubLlmApp.savedIndexRequests.get(0).second.file("someFile.txt")!!)
     }
 
     fun assertFormFileIsTheSame(expected: MultipartFormFile, actual: MultipartFormFile) {
@@ -66,7 +73,7 @@ class IndexRequestsAcceptanceTest {
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, InMemoryKnowledgeFileStore(emptyList())))
+            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore))
         return server.asServer(Undertow(port = port)).start()
     }
 

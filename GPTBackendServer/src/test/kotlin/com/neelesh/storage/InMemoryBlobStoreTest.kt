@@ -1,5 +1,7 @@
 package com.neelesh.storage
 
+import com.neelesh.model.BlobReference
+import com.neelesh.model.DataType
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -22,8 +24,8 @@ class InMemoryBlobStoreTest {
         val content = "someText".byteInputStream()
         val blobId = "someId"
         val filename = "someFileName.txt"
-
-        blobStore.storeBlob(blobId, filename, content)
+        val blobReference = BlobReference(blobId, DataType.PLAIN_TEXT, filename)
+        blobStore.storeBlob(blobReference, content)
 
         assertEquals("someText", testingDirectory.resolve("someFileName.txt").readText())
     }
@@ -34,7 +36,8 @@ class InMemoryBlobStoreTest {
         val blobId = "someId"
         val filename = "someFileName.txt"
 
-        blobStore.storeBlob(blobId, filename, content)
+        val blobReference = BlobReference(blobId, DataType.PLAIN_TEXT, filename)
+        blobStore.storeBlob(blobReference, content)
         val retrievedBlob = blobStore.getBlob(blobId)
         retrievedBlob.fold(
             {
