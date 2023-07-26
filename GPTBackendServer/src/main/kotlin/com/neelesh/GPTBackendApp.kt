@@ -4,8 +4,10 @@ import com.neelesh.config.Dependencies
 import com.neelesh.formats.JacksonMessage
 import com.neelesh.formats.jacksonMessageLens
 import com.neelesh.llm.IndexRequestHandler
+import com.neelesh.llm.QueryRequestHandler
 import com.neelesh.routes.ExampleContractRoute
 import com.neelesh.routes.IndexRequestRoute
+import com.neelesh.routes.QueryRequestRoute
 import com.neelesh.security.InMemoryOAuthPersistence
 import com.neelesh.security.InsecureTokenChecker
 import com.neelesh.user.MongoBasedOAuthPersistence
@@ -70,6 +72,11 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
         dependencies.llmClient
     )
 
+    val queryRequestHandler = QueryRequestHandler(
+        dependencies.knowledgeFileStore,
+        dependencies.llmClient
+    )
+
     return routes(
         "/ping" bind Method.GET to {
             Response(Status.OK).body("pong")
@@ -91,6 +98,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             // Add contract routes
             routes += ExampleContractRoute()
             routes += IndexRequestRoute(indexRequestHandler)
+            routes += QueryRequestRoute(queryRequestHandler)
         },
 
         routingHttpHandler(API_DESCRIPTION_PATH),

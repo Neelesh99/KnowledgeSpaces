@@ -1,17 +1,31 @@
 package com.neelesh.llm
 
 import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
+import arrow.core.right
 import com.neelesh.persistence.KnowledgeFileStore
 import com.neelesh.routes.SimpleQueryRequest
-import com.neelesh.storage.BlobStore
-import io.undertow.server.HttpHandler
+import org.http4k.core.*
+import org.http4k.format.Jackson
 
 class QueryRequestHandler(
-    val blobStore: BlobStore,
     val knowledgeFileStore: KnowledgeFileStore,
     val llmClient: HttpHandler
 ) {
     fun handle(queryRequestDto: SimpleQueryRequest): Either<Exception, String> {
-        TODO("Not yet implemented")
+        return knowledgeFileStore.getKnowledgeFile(queryRequestDto.knowledgeFileTarget, queryRequestDto.email)
+            .flatMap { knowledgeFile ->
+                val indexRequest = LLMQueryRequestBuilder.buildQueryRequest(
+                    knowledgeFile,
+                    queryRequestDto.query
+                )
+                val response = llmClient(Request(Method.POST, "/api/v1/llm/knowledgeFile/query").body(indexRequest).header("Content-Type", ContentType.MultipartFormWithBoundary(indexRequest.boundary).toHeaderValue()))
+                if (response.status != Status.OK) {
+                    java.lang.Exception("Error from LLM API code: ${response.status.code}").left()
+                } else {
+                    response.bodyString().right()
+                }
+            }
     }
 }
