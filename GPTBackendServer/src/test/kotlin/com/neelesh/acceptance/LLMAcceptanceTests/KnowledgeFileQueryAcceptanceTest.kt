@@ -1,6 +1,7 @@
 package com.neelesh.acceptance.LLMAcceptanceTests
 
 import com.neelesh.GPTUserApp
+import com.neelesh.acceptance.LLMAcceptanceTests.IndexRequestsAcceptanceTest.Companion.assertFormFileIsTheSame
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
 import com.neelesh.config.Dependencies
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
-class IndexRequestsAcceptanceTest {
+class KnowledgeFileQueryAcceptanceTest {
 
     @field:TempDir
     lateinit var testingDirectory: File
@@ -34,49 +35,37 @@ class IndexRequestsAcceptanceTest {
     private val inMemoryKnowledgeFileStore = InMemoryKnowledgeFileStore(emptyList())
 
     @Test
-    fun `will post index request to server and it will be sent to llm for indexing`() {
+    fun `will receive and send query to llm backend`() {
         val stubLlmApp = StubLLMApp(emptyList(), emptyList())
         val server = setupClient(stubLlmApp, 0)
-        inMemoryKnowledgeFileStore.saveKnowledgeFile(KnowledgeFile(
+        val knowledgeFile = KnowledgeFile(
             "someKnowledgeFileId",
             "someEmail",
             "someKnowledgeFileName",
             listOf("someBlobId"),
             "{}"
-        ))
+        )
+        inMemoryKnowledgeFileStore.saveKnowledgeFile(
+            knowledgeFile
+        )
         val blobReference = BlobReference("someBlobId",  DataType.PLAIN_TEXT,"someFile.txt")
         blobStore.storeBlob(blobReference, "someText".byteInputStream())
-        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/sendRequest?api=42")
-            .body("{\"email\":\"someEmail\",\"knowledgeFileTarget\":\"someKnowledgeFileId\"}")
+        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/queryRequest?api=42")
+            .body("{\"email\":\"someEmail\",\"knowledgeFileTarget\":\"someKnowledgeFileId\",\"query\":\"hello\"}")
 
         val testClient = OkHttp()
         val response = testClient(request)
-        val expectedIndexRequest = IndexRequest(
-            UserDetails("someEmail"),
-            "someKnowledgeFileId",
-            listOf(BlobReference("someBlobId", DataType.PLAIN_TEXT, "someFile.txt"))
-        )
-        val expectedFile = MultipartFormFile("someFile.txt", ContentType.OCTET_STREAM, "someText".byteInputStream())
         assertEquals(Status.OK, response.status)
-        assertEquals(expectedIndexRequest, stubLlmApp.savedIndexRequests.get(0).first)
-        assertFormFileIsTheSame(expectedFile, stubLlmApp.savedIndexRequests.get(0).second.file("someFile.txt")!!)
-        assertEquals("someRunId", response.bodyString())
-    }
-
-    companion object {
-        fun assertFormFileIsTheSame(expected: MultipartFormFile, actual: MultipartFormFile) {
-            assertEquals(expected.filename, actual.filename)
-            assertEquals(expected.contentType.value, actual.contentType.value)
-            val consumedExpected = String(expected.content.readAllBytes())
-            val consumedActual = String(actual.content.readAllBytes())
-            assertEquals(consumedExpected, consumedActual)
-        }
+        assertEquals(knowledgeFile, stubLlmApp.savedQueryRequests.get(0).first)
+        assertEquals("hello", stubLlmApp.savedQueryRequests.get(0).second)
+        assertEquals("hello", response.bodyString())
     }
 
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore))
+            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore)
+        )
         return server.asServer(Undertow(port = port)).start()
     }
 
