@@ -8,6 +8,7 @@ import org.http4k.format.Jackson
 data class KnowledgeSpace(
     val id: String,
     val name: String,
+    val email: String,
     val files: List<String>
 ) {
 
@@ -15,6 +16,7 @@ data class KnowledgeSpace(
         return Jackson.obj(
             "id" to string(id),
             "name" to string(name),
+            "email" to string(email),
             "files" to array(files.map { string(it) })
         )
     }
@@ -25,6 +27,7 @@ data class KnowledgeSpace(
             return KnowledgeSpace(
                 jsonNode.get("id").textValue(),
                 jsonNode.get("name").textValue(),
+                jsonNode.get("email").textValue(),
                 jsonNode.get("files").map { it.textValue() }
             )
         }

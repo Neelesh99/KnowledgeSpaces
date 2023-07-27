@@ -10,6 +10,7 @@ class KnowledgeSpaceTest {
         val knowledgeSpace = KnowledgeSpace(
             "someId",
             "someName",
+            "someEmail",
             listOf("someFileId")
         )
 
