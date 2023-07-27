@@ -2,7 +2,9 @@ package com.neelesh
 
 import com.neelesh.config.Dependencies
 import com.neelesh.model.KnowledgeFile
+import com.neelesh.model.KnowledgeSpace
 import com.neelesh.persistence.MongoBackedKnowledgeFileStore
+import com.neelesh.persistence.MongoBackedKnowledgeSpaceStore
 import com.neelesh.storage.InMemoryBlobStore
 import org.http4k.core.HttpHandler
 import org.http4k.core.then
@@ -22,7 +24,8 @@ fun main() {
     val dependencies = Dependencies(
         client,
         InMemoryBlobStore(File("/storage")),
-        MongoBackedKnowledgeFileStore(db.getCollection<KnowledgeFile>("knowledgeFileCollection"))
+        MongoBackedKnowledgeFileStore(db.getCollection<KnowledgeFile>("knowledgeFileCollection")),
+        MongoBackedKnowledgeSpaceStore(db.getCollection<KnowledgeSpace>("knowledgeSpaceCollection"))
     )
     val printingApp: HttpHandler = PrintRequest().then(GPTUserApp(mongoOAuthPersistence, dependencies))
 

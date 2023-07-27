@@ -3,6 +3,7 @@ package com.neelesh.acceptance.LLMAcceptanceTests
 import com.neelesh.GPTUserApp
 import com.neelesh.acceptance.LLMAcceptanceTests.IndexRequestsAcceptanceTest.Companion.assertFormFileIsTheSame
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
+import com.neelesh.acceptance.Stubs.InMemoryKnowledgeSpaceStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
 import com.neelesh.config.Dependencies
 import com.neelesh.model.*
@@ -36,7 +37,7 @@ class KnowledgeFileQueryAcceptanceTest {
 
     @Test
     fun `will receive and send query to llm backend`() {
-        val stubLlmApp = StubLLMApp(emptyList(), emptyList())
+        val stubLlmApp = StubLLMApp(emptyList(), emptyList(), emptyList())
         val server = setupClient(stubLlmApp, 0)
         val knowledgeFile = KnowledgeFile(
             "someKnowledgeFileId",
@@ -64,7 +65,7 @@ class KnowledgeFileQueryAcceptanceTest {
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore)
+            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, InMemoryKnowledgeSpaceStore())
         )
         return server.asServer(Undertow(port = port)).start()
     }

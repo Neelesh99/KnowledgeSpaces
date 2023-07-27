@@ -2,6 +2,7 @@ package com.neelesh.acceptance.Stubs
 
 import com.neelesh.model.IndexRequest
 import com.neelesh.model.KnowledgeFile
+import com.neelesh.model.KnowledgeSpace
 import org.http4k.core.*
 import org.http4k.format.Jackson
 import org.http4k.routing.bind
@@ -9,13 +10,15 @@ import org.http4k.routing.routes
 
 class StubLLMApp(
     private val responsesForIndexRequests: List<Pair<String, Response>>,
-    private val responsesForQueryRequests: List<Pair<String, Response>>
+    private val responsesForQueryRequests: List<Pair<String, Response>>,
+    private val responsesForSpacesQueryRequests: List<Pair<String, Response>>
 ){
 
     val defaultResponseForIndexRequest = Response(Status.OK).body("{\"runId\":\"someRunId\"}")
 
     val savedIndexRequests = mutableListOf<Pair<IndexRequest, MultipartFormBody>>()
     val savedQueryRequests = mutableListOf<Pair<KnowledgeFile, String>>()
+    val savedSpacesQueryRequests = mutableListOf<Pair<KnowledgeSpace, String>>()
 
     fun server() =  routes(
         "/ping" bind Method.GET to {
@@ -38,6 +41,18 @@ class StubLLMApp(
             val request = formBody.field("query")!!.value
             savedQueryRequests.add(knowledgeFile to request)
             val response = responsesForQueryRequests.find { targetFileId -> targetFileId.first == knowledgeFile.id }
+            response?.second ?: Response(Status.OK).body(request)
+        },
+        "/api/v1/llm/knowledgeSpace/query" bind Method.POST to { queryRequest ->
+            val formBody = MultipartFormBody.from(queryRequest)
+            val knowledgeSpaceJson = formBody.file("knowledgeSpace.json")
+            val knowledgeSpace = KnowledgeSpace.fromJson(Jackson.parse(String(knowledgeSpaceJson!!.content.readAllBytes())))
+            val knowledgeFileIds = knowledgeSpace.files
+            val knowledgeFilesJsons = knowledgeFileIds.map { id -> String(formBody.file(id)!!.content.readAllBytes()) }
+            val knowledgeFiles = knowledgeFilesJsons.map { KnowledgeFile.fromJson(Jackson.parse(it)) }
+            val request = formBody.field("query")!!.value
+            savedSpacesQueryRequests.add(knowledgeSpace to request)
+            val response = responsesForSpacesQueryRequests.find { targetSpaceId -> targetSpaceId.first == knowledgeSpace.id }
             response?.second ?: Response(Status.OK).body(request)
         }
     )

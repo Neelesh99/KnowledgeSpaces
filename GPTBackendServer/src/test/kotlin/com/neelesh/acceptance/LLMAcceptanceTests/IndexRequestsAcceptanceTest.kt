@@ -2,6 +2,7 @@ package com.neelesh.acceptance.LLMAcceptanceTests
 
 import com.neelesh.GPTUserApp
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
+import com.neelesh.acceptance.Stubs.InMemoryKnowledgeSpaceStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
 import com.neelesh.config.Dependencies
 import com.neelesh.model.*
@@ -35,7 +36,7 @@ class IndexRequestsAcceptanceTest {
 
     @Test
     fun `will post index request to server and it will be sent to llm for indexing`() {
-        val stubLlmApp = StubLLMApp(emptyList(), emptyList())
+        val stubLlmApp = StubLLMApp(emptyList(), emptyList(), emptyList())
         val server = setupClient(stubLlmApp, 0)
         inMemoryKnowledgeFileStore.saveKnowledgeFile(KnowledgeFile(
             "someKnowledgeFileId",
@@ -76,7 +77,7 @@ class IndexRequestsAcceptanceTest {
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore))
+            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, InMemoryKnowledgeSpaceStore()))
         return server.asServer(Undertow(port = port)).start()
     }
 
