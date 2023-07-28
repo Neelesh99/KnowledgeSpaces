@@ -99,6 +99,12 @@ class IndexMaker:
         return get_vector_index(documents, get_local_llm_from_huggingface(model_config), model_config, hf)
 
     @staticmethod
+    def get_hf_index_from_docs(documents: list[Document]):
+        model_config = get_model_config_from_env()
+        hf = IndexMaker.get_hf_embeddings()
+        return get_vector_index(documents, get_local_llm_from_huggingface(model_config), model_config, hf)
+
+    @staticmethod
     def get_hf_index_from_slack(channel_ids: list[str]):
         documents = SlackReader().load_data(channel_ids)
         model_config = get_model_config_from_env()

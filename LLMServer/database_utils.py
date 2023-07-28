@@ -35,6 +35,12 @@ def get_db_from_config(config: DatabaseConfig) -> Database:
     client = MongoClient(config.connection_string)
     return client[config.db_name]
 
+def save_index_api(index: VectorStoreIndex, email: str, id: str, collection: Collection):
+    filter = {email: email, id: id}
+    oldData = collection.find_one(filter)
+    oldData["indexDict"] = json.dumps(index.storage_context.to_dict())
+    collection.replace_one(filter, oldData, upsert=True)
+
 def save_index(index: VectorStoreIndex, knowledge_collection: Collection, email: str):
     save_index_to_knowledge_space(index, "my_knowledge_space", knowledge_collection, email)
 
