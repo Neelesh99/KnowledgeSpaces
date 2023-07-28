@@ -25,7 +25,7 @@ db_config = DatabaseConfig.get_database_config_from_env()
 db = get_db_from_config(db_config)
 #
 # # Getting knowledgespace collection
-knowledge_file_collection = db.get_collection("knowledgeFiles")
+knowledge_file_collection = db.get_collection("knowledgeFileCollection")
 #
 # knowledge_collection_collection = db.get_collection("knowledge_collection")
 
@@ -55,6 +55,6 @@ async def handle_index_request(request: Request):
                 text = plain_text_handler(await data.read())
                 documentsForIndex = documentsForIndex + StringIterableReader().load_data([text])
         index = IndexMaker.get_hf_index_from_docs(documentsForIndex)
-        save_index_api(index, indexRequestMap["userDetails"]["email"], knowledge_file_collection)
+        save_index_api(index, indexRequestMap["userDetails"]["email"], indexRequestMap["knowledgeFileTarget"], knowledge_file_collection)
     return {"runId": "someRunId"}
 
