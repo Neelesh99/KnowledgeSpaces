@@ -9,7 +9,7 @@ import java.lang.Exception
 
 class InMemoryKnowledgeFileStore(val existingFiles: List<KnowledgeFile>) : KnowledgeFileStore {
 
-    private val fileStore = MutableList(existingFiles.size) {index -> existingFiles[index]}
+    val fileStore = MutableList(existingFiles.size) {index -> existingFiles[index]}
 
     override fun getKnowledgeFile(knowledgeFileId: String, email: String): Either<Exception, KnowledgeFile> {
         val foundFile = fileStore.find { file -> file.id == knowledgeFileId && file.email == email }
@@ -17,7 +17,12 @@ class InMemoryKnowledgeFileStore(val existingFiles: List<KnowledgeFile>) : Knowl
     }
 
     override fun saveKnowledgeFile(knowledgeFile: KnowledgeFile): Either<Exception, KnowledgeFile> {
-        fileStore.add(knowledgeFile)
+        val indexOfFirst = fileStore.indexOfFirst { file -> file.id == knowledgeFile.id }
+        if (indexOfFirst != -1){
+            fileStore.set(indexOfFirst, knowledgeFile)
+        } else {
+            fileStore.add(knowledgeFile)
+        }
         return knowledgeFile.right()
     }
 

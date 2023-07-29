@@ -116,6 +116,8 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             routes += UploadBlobRoute(blobHandler)
         },
 
+        "a" bind contract {  routes += UploadBlobRoute(blobHandler) },
+
         routingHttpHandler(API_DESCRIPTION_PATH),
 
         routingHttpHandler2(),
