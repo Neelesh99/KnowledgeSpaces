@@ -6,14 +6,13 @@ import com.neelesh.formats.jacksonMessageLens
 import com.neelesh.llm.IndexRequestHandler
 import com.neelesh.llm.QueryRequestHandler
 import com.neelesh.llm.SpacesQueryRequestHandler
-import com.neelesh.routes.ExampleContractRoute
-import com.neelesh.routes.IndexRequestRoute
-import com.neelesh.routes.QueryRequestRoute
-import com.neelesh.routes.SpaceQueryRequestRoute
+import com.neelesh.routes.*
 import com.neelesh.security.InMemoryOAuthPersistence
 import com.neelesh.security.InsecureTokenChecker
+import com.neelesh.storage.BlobHandler
 import com.neelesh.user.MongoBasedOAuthPersistence
 import com.neelesh.user.User
+import com.neelesh.util.UUIDGenerator
 import org.http4k.client.JavaHttpClient
 import org.http4k.contract.bind
 import org.http4k.contract.contract
@@ -85,6 +84,12 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
         dependencies.llmClient
     )
 
+    val blobHandler = BlobHandler(
+        dependencies.knowledgeFileStore,
+        dependencies.blobStore,
+        UUIDGenerator()
+    )
+
     return routes(
         "/ping" bind Method.GET to {
             Response(Status.OK).body("pong")
@@ -108,6 +113,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             routes += IndexRequestRoute(indexRequestHandler)
             routes += QueryRequestRoute(queryRequestHandler)
             routes += SpaceQueryRequestRoute(spaceQueryRequestHandler)
+            routes += UploadBlobRoute(blobHandler)
         },
 
         routingHttpHandler(API_DESCRIPTION_PATH),
