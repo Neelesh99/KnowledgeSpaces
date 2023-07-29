@@ -8,13 +8,13 @@ from llama_index import StorageContext, ServiceContext, load_index_from_storage,
 from pydantic import BaseModel
 
 from index_request_handler import plain_text_handler
-from compose_graph import compose_graph_from_knowledge_space_collection
+from compose_graph import compose_graph_from_knowledge_space_collection, compose_graph_hf
 from construct_index import get_model_config_from_env, get_local_llm_from_huggingface, IndexMaker, get_openai_api_llm
 from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space, \
     save_knowledge_space_collection, get_knowledge_space_collection, save_index_api
 from knowledge_space import KnowledgeFile, KnowledgeSpace
 from packaged_index_utilities import local_knowledge_space_model, model_config, open_ai_knowledge_space_model, \
-    local_workspace_model, open_ai_workspace_model
+    local_workspace_model, open_ai_workspace_model, full_index_local_knowledge_space_model
 
 app = FastAPI()
 
@@ -74,3 +74,33 @@ async def handle_file_query(request: Request):
         model = local_knowledge_space_model(knowledgeFile)
         return model.query(query).response
 
+@app.post("/api/v1/llm/knowledgeSpace/query")
+async def handle_space_query(request: Request):
+    async with request.form() as form:
+        query = form["query"]
+        knowledgeSpaceBytes = await form["knowledgeSpace.json"].read()
+        knowledgeSpaceMap = json.loads(knowledgeSpaceBytes.decode())
+        knowledgeSpace = KnowledgeSpace(
+            knowledgeSpaceMap["id"],
+            knowledgeSpaceMap["name"],
+            knowledgeSpaceMap["files"],
+            knowledgeSpaceMap["email"]
+        )
+        knowledgeFileIds = knowledgeSpace.files
+        indices = []
+        summaries = []
+        for knowledgeFileId in knowledgeFileIds:
+            fileBytes = await form[knowledgeFileId].read()
+            knowledgeFileMap = json.loads(fileBytes.decode())
+            knowledgeFile = KnowledgeFile(
+                knowledgeFileMap["id"],
+                knowledgeFileMap["email"],
+                knowledgeFileMap["name"],
+                knowledgeFileMap["blobIds"],
+                knowledgeFileMap["indexDict"]
+            )
+            index = full_index_local_knowledge_space_model(knowledgeFile)
+            indices.append(index)
+            summaries.append(knowledgeFile.name)
+        graph = compose_graph_hf(indices, summaries)
+        return graph.query(query).response
