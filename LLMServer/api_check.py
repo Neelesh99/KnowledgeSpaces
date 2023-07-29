@@ -1,20 +1,16 @@
 import json
-from typing import Annotated
 
-from fastapi import Form, File, UploadFile, Request, FastAPI
-from typing import List
-from llama_index import StorageContext, ServiceContext, load_index_from_storage, LLMPredictor, Document, \
+from fastapi import Request, FastAPI
+from llama_index import Document, \
     StringIterableReader
 from pydantic import BaseModel
 
+from compose_graph import compose_graph_hf
+from construct_index import IndexMaker
+from database_utils import DatabaseConfig, get_db_from_config, save_index_api
 from index_request_handler import plain_text_handler
-from compose_graph import compose_graph_from_knowledge_space_collection, compose_graph_hf
-from construct_index import get_model_config_from_env, get_local_llm_from_huggingface, IndexMaker, get_openai_api_llm
-from database_utils import DatabaseConfig, get_db_from_config, get_index, save_index_to_knowledge_space, \
-    save_knowledge_space_collection, get_knowledge_space_collection, save_index_api
 from knowledge_space import KnowledgeFile, KnowledgeSpace
-from packaged_index_utilities import local_knowledge_space_model, model_config, open_ai_knowledge_space_model, \
-    local_workspace_model, open_ai_workspace_model, full_index_local_knowledge_space_model
+from packaged_index_utilities import local_knowledge_space_model, full_index_local_knowledge_space_model
 
 app = FastAPI()
 
