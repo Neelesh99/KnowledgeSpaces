@@ -58,3 +58,19 @@ async def handle_index_request(request: Request):
         save_index_api(index, indexRequestMap["userDetails"]["email"], indexRequestMap["knowledgeFileTarget"], knowledge_file_collection)
     return {"runId": "someRunId"}
 
+@app.post("/api/v1/llm/knowledgeFile/query")
+async def handle_file_query(request: Request):
+    async with request.form() as form:
+        query = form["query"]
+        knowledgeFileBytes = await form["knowledgeFile.json"].read()
+        knowledgeFileMap = json.loads(knowledgeFileBytes.decode())
+        knowledgeFile = KnowledgeFile(
+            knowledgeFileMap["id"],
+            knowledgeFileMap["email"],
+            knowledgeFileMap["name"],
+            knowledgeFileMap["blobIds"],
+            knowledgeFileMap["indexDict"]
+        )
+        model = local_knowledge_space_model(knowledgeFile)
+        return model.query(query).response
+
