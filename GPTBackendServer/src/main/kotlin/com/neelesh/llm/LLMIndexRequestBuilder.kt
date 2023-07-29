@@ -27,8 +27,8 @@ class LLMIndexRequestBuilder {
             }
 
             val formBody =  MultipartFormBody()
-                .plus("indexRequestFileName" to "indexRequest.json")
-                .plus("indexRequest.json" to MultipartFormFile(
+                .plus("indexRequestFileName" to "indexRequest")
+                .plus("indexRequest" to MultipartFormFile(
                     "indexRequest.json",
                     ContentType.OCTET_STREAM,
                     indexRequest.toJson().toString().byteInputStream()
