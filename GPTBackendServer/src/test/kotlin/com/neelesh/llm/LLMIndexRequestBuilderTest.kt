@@ -26,8 +26,8 @@ class LLMIndexRequestBuilderTest {
         val indexRequest = IndexRequest(UserDetails(email), knowledgeFileTarget, blobs.map { it.first })
 
         val expectedForm = MultipartFormBody()
-            .plus("indexRequestFileName" to "indexRequest.json")
-            .plus("indexRequest.json" to MultipartFormFile(
+            .plus("indexRequestFileName" to "indexRequest")
+            .plus("indexRequest" to MultipartFormFile(
                 "indexRequest.json",
                 ContentType.OCTET_STREAM,
                 indexRequest.toJson().toString().byteInputStream()
@@ -41,7 +41,7 @@ class LLMIndexRequestBuilderTest {
         val actual = LLMIndexRequestBuilder.buildIndexRequest(email, knowledgeFileTarget, blobs)
 
         Assertions.assertEquals(actual.field("indexRequestFileName"), expectedForm.field("indexRequestFileName"))
-        Assertions.assertEquals(String(actual.file("indexRequest.json")!!.content.readAllBytes()), String(expectedForm.file("indexRequest.json")!!.content.readAllBytes()))
+        Assertions.assertEquals(String(actual.file("indexRequest")!!.content.readAllBytes()), String(expectedForm.file("indexRequest")!!.content.readAllBytes()))
         val readAllBytes = actual.file("someInfo.txt")!!.content.readAllBytes()
         val readAllBytes1 = expectedForm.file("someInfo.txt")!!.content.readAllBytes()
         Assertions.assertEquals(String(readAllBytes), String(readAllBytes1))

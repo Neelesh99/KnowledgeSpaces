@@ -1,39 +1,17 @@
 package com.neelesh.acceptance.LLMAcceptanceTests
 
-import com.neelesh.GPTUserApp
-import com.neelesh.acceptance.LLMAcceptanceTests.IndexRequestsAcceptanceTest.Companion.assertFormFileIsTheSame
-import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
-import com.neelesh.acceptance.Stubs.InMemoryKnowledgeSpaceStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
-import com.neelesh.config.Dependencies
-import com.neelesh.model.*
-import com.neelesh.storage.BlobStore
-import com.neelesh.storage.InMemoryBlobStore
+import com.neelesh.model.BlobReference
+import com.neelesh.model.DataType
+import com.neelesh.model.KnowledgeFile
 import org.http4k.client.OkHttp
-import org.http4k.core.ContentType
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
-import org.http4k.lens.MultipartFormFile
-import org.http4k.security.InsecureCookieBasedOAuthPersistence
-import org.http4k.server.Http4kServer
-import org.http4k.server.Undertow
-import org.http4k.server.asServer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
-import java.io.File
 
-class KnowledgeFileQueryAcceptanceTest {
-
-    @field:TempDir
-    lateinit var testingDirectory: File
-
-    val blobStore: BlobStore by lazy {
-        InMemoryBlobStore(testingDirectory)
-    }
-
-    private val inMemoryKnowledgeFileStore = InMemoryKnowledgeFileStore(emptyList())
+class KnowledgeFileQueryAcceptanceTest : BaseAcceptanceTest() {
 
     @Test
     fun `will receive and send query to llm backend`() {
@@ -60,14 +38,6 @@ class KnowledgeFileQueryAcceptanceTest {
         assertEquals(knowledgeFile, stubLlmApp.savedQueryRequests.get(0).first)
         assertEquals("hello", stubLlmApp.savedQueryRequests.get(0).second)
         assertEquals("hello", response.bodyString())
-    }
-
-    fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
-        val server = GPTUserApp(
-            InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, InMemoryKnowledgeSpaceStore())
-        )
-        return server.asServer(Undertow(port = port)).start()
     }
 
 }

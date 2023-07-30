@@ -111,7 +111,7 @@ class IndexRequestHandlerTest {
         )
 //        val formBody = requestSlot.captured.body as MultipartFormBody
         val formBody = MultipartFormBody.from(requestSlot.captured)
-        val actualIndexRequest = IndexRequest.fromJson(Jackson.parse(String(formBody.file("indexRequest.json")!!.content.readAllBytes())))
+        val actualIndexRequest = IndexRequest.fromJson(Jackson.parse(String(formBody.file("indexRequest")!!.content.readAllBytes())))
         assertEquals("/api/v1/llm/index", requestSlot.captured.uri.toString())
         assertEquals(expectedIndexRequest, actualIndexRequest)
         assertEquals("someText", String(formBody.file("someFile.txt")!!.content.readAllBytes()))

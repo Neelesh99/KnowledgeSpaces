@@ -2,7 +2,6 @@ package com.neelesh.storage
 
 import com.neelesh.model.BlobReference
 import com.neelesh.model.DataType
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -45,7 +44,7 @@ class InMemoryBlobStoreTest {
             },
             {
                 result ->
-                    assertEquals("someFileName.txt", result.first)
+                    assertEquals(blobReference, result.first)
                     assertEquals("someText", String(result.second.readAllBytes()))
             }
         )
