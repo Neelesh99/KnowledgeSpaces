@@ -5,8 +5,10 @@ import arrow.core.flatMap
 import com.neelesh.model.BlobReference
 import com.neelesh.model.KnowledgeFile
 import com.neelesh.persistence.KnowledgeFileStore
+import com.neelesh.routes.SimpleBlobDownloadRequest
 import com.neelesh.routes.SimpleBlobUploadRequest
 import com.neelesh.util.UUIDGenerator
+import java.io.InputStream
 
 class BlobHandler(
     val knowledgeFileStore: KnowledgeFileStore,
@@ -21,7 +23,7 @@ class BlobHandler(
         )
     }
 
-    fun handle(simpleBlobUpload: SimpleBlobUploadRequest): Either<Exception, String> {
+    fun upload(simpleBlobUpload: SimpleBlobUploadRequest): Either<Exception, String> {
         val blobReference = getReference(simpleBlobUpload)
         blobStore.storeBlob(blobReference, simpleBlobUpload.dataStream)
         return knowledgeFileStore.getKnowledgeFile(simpleBlobUpload.knowledgeFileTarget, simpleBlobUpload.email)
@@ -30,6 +32,10 @@ class BlobHandler(
                 knowledgeFileStore.saveKnowledgeFile(updatedFile)
             }
             .map { it.id }
+    }
+
+    fun download(simpleBlobDownload: SimpleBlobDownloadRequest): Either<Exception, Pair<BlobReference, InputStream>> {
+        return blobStore.getBlob(simpleBlobDownload.blobId)
     }
 
 }

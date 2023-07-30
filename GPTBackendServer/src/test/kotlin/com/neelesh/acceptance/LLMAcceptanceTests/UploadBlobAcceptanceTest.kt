@@ -55,7 +55,7 @@ class UploadBlobAcceptanceTest {
                 ContentType.OCTET_STREAM,
                 "someText".byteInputStream()
             ))
-        val request = Request(Method.POST, "http://localhost:${server.port()}/a/upload/blob?api=42")
+        val request = Request(Method.POST, "http://localhost:${server.port()}/contract/api/v1/upload/blob?api=42")
             .body(inputForm)
             .header("Content-Type", ContentType.MultipartFormWithBoundary(inputForm.boundary).toHeaderValue())
 

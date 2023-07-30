@@ -6,7 +6,6 @@ import com.neelesh.storage.BlobHandler
 import io.mockk.every
 import io.mockk.mockk
 import org.http4k.core.*
-import org.http4k.lens.MultipartForm
 import org.http4k.lens.MultipartFormFile
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -26,7 +25,7 @@ class UploadBlobRouteTest {
             "someKnowledgeFileId",
             "someEmail"
         )
-        every { blobHandler.handle(any()) } returns "someKnowledgeFileId".right()
+        every { blobHandler.upload(any()) } returns "someKnowledgeFileId".right()
 
         val inputForm = MultipartFormBody().plus("dataType" to "PLAIN_TEXT")
             .plus("fileName" to "someFileName")

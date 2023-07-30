@@ -1,6 +1,5 @@
 package com.neelesh.routes
 
-import com.neelesh.llm.SpacesQueryRequestHandler
 import com.neelesh.model.DataType
 import com.neelesh.storage.BlobHandler
 import org.http4k.contract.ContractRoute
@@ -36,7 +35,7 @@ object UploadBlobRoute {
             received.field("knowledgeFileTarget")!!.value,
             received.field("email")!!.value
         )
-        val result = blobHandler.handle(uploadRequest)
+        val result = blobHandler.upload(uploadRequest)
         result.fold(
             {
                 Response(Status.INTERNAL_SERVER_ERROR).body(it.message ?: "Internal Server Error")

@@ -5,12 +5,12 @@ import com.neelesh.model.BlobReference
 import com.neelesh.model.DataType
 import com.neelesh.model.KnowledgeFile
 import com.neelesh.persistence.KnowledgeFileStore
+import com.neelesh.routes.SimpleBlobDownloadRequest
 import com.neelesh.routes.SimpleBlobUploadRequest
 import com.neelesh.util.UUIDGenerator
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -63,7 +63,24 @@ class BlobHandlerTest {
         val expectedNewFile = knowledgeFile.copy(blobIds = listOf("someBlobId", "someId"))
         every { knowledgeFileStore.saveKnowledgeFile(expectedNewFile) } returns expectedNewFile.right()
 
-        Assertions.assertEquals("someTargetFileId".right(), blobHandler.handle(simpleBlobUpload))
+        Assertions.assertEquals("someTargetFileId".right(), blobHandler.upload(simpleBlobUpload))
+
+    }
+
+    @Test
+    fun `will download blob using storage`() {
+        val simpleBlobDownload = SimpleBlobDownloadRequest("blobId")
+        val blobReference = BlobReference(
+            "blobId",
+            DataType.PLAIN_TEXT,
+            "someFileName"
+        )
+        val data = "someData".byteInputStream()
+        val expectedResponse = blobReference to data
+        every { blobStore.getBlob("blobId") } returns expectedResponse.right()
+        val response = blobHandler.download(simpleBlobDownload)
+
+        Assertions.assertEquals(expectedResponse.right(), response)
 
     }
 
