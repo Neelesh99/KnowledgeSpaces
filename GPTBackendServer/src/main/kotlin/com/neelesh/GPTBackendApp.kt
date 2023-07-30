@@ -122,6 +122,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             routes += UploadBlobRoute(blobHandler)
             routes += DownloadBlobRoute(blobHandler)
             routes += CreateKnowledgeFileRoute(knowledgeFileHandler)
+            routes += UpdateKnowledgeFileRoute(knowledgeFileHandler)
         },
 
         routingHttpHandler(API_DESCRIPTION_PATH),
