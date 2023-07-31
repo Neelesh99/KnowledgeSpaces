@@ -7,6 +7,7 @@ import com.neelesh.llm.IndexRequestHandler
 import com.neelesh.llm.QueryRequestHandler
 import com.neelesh.llm.SpacesQueryRequestHandler
 import com.neelesh.persistence.KnowledgeFileHandler
+import com.neelesh.persistence.KnowledgeSpaceHandler
 import com.neelesh.routes.*
 import com.neelesh.security.InMemoryOAuthPersistence
 import com.neelesh.security.InsecureTokenChecker
@@ -96,6 +97,11 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
         UUIDGenerator()
     )
 
+    val knowledgeSpaceHandler = KnowledgeSpaceHandler(
+        dependencies.knowledgeSpaceStore,
+        UUIDGenerator()
+    )
+
     return routes(
         "/ping" bind Method.GET to {
             Response(Status.OK).body("pong")
@@ -123,6 +129,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             routes += DownloadBlobRoute(blobHandler)
             routes += CreateKnowledgeFileRoute(knowledgeFileHandler)
             routes += UpdateKnowledgeFileRoute(knowledgeFileHandler)
+            routes += CreateKnowledgeSpaceRoute(knowledgeSpaceHandler)
         },
 
         routingHttpHandler(API_DESCRIPTION_PATH),
