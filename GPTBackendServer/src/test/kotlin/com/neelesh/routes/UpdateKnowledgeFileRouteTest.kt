@@ -19,7 +19,7 @@ class UpdateKnowledgeFileRouteTest {
     fun `will download blob as multipart form`() {
         every { knowledgeFileHandler.update(any()) } returns "someFileId".right()
 
-        val request = Request(Method.POST, "/knowledgeFile/create").body("{\"knowledgeFileId\":\"someFileId\",\"email\":\"someEmail\",\"newName\":\"newFileName\",\"newBlobs\":[\"someOtherBlobId\"]}")
+        val request = Request(Method.POST, "/knowledgeFile/update").body("{\"knowledgeFileId\":\"someFileId\",\"email\":\"someEmail\",\"newName\":\"newFileName\",\"newBlobs\":[\"someOtherBlobId\"]}")
         val response = route(request)
         Assertions.assertEquals(Status.OK, response.status)
         Assertions.assertEquals("someFileId", response.bodyString())

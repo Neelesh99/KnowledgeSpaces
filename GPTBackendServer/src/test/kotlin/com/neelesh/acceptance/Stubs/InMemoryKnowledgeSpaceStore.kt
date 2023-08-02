@@ -3,10 +3,8 @@ package com.neelesh.acceptance.Stubs
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.neelesh.model.KnowledgeFile
 import com.neelesh.model.KnowledgeSpace
 import com.neelesh.persistence.KnowledgeSpaceStore
-import java.lang.Exception
 
 class InMemoryKnowledgeSpaceStore : KnowledgeSpaceStore {
 
@@ -18,7 +16,12 @@ class InMemoryKnowledgeSpaceStore : KnowledgeSpaceStore {
     }
 
     override fun saveKnowledgeSpace(knowledgeSpace: KnowledgeSpace): Either<Exception, KnowledgeSpace> {
-        fileStore.add(knowledgeSpace)
+        val indexOfFirst = fileStore.indexOfFirst { file -> file.id == knowledgeSpace.id }
+        if (indexOfFirst != -1){
+            fileStore.set(indexOfFirst, knowledgeSpace)
+        } else {
+            fileStore.add(knowledgeSpace)
+        }
         return knowledgeSpace.right()
     }
 }
