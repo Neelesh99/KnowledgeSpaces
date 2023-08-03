@@ -141,9 +141,20 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             "/" bind Method.GET to oauthProvider.authFilter.then {
                 val cookie = it.cookie("securityServerAuth")
                 val user = userCollection.findOne(User::cookieSwapString eq cookie!!.value)!!
-                Response(Status.OK).body(user.toDtoJson().toPrettyString())
+                Response(Status.TEMPORARY_REDIRECT)
+                    .header("Location", it.header("Referer"))
+            },
+            "/getUser" bind Method.GET to {
+                val cookie = it.cookie("securityServerAuth")
+                val user = userCollection.findOne(User::cookieSwapString eq cookie!!.value)!!
+                Response(Status.OK)
+                    .header("Access-Control-Allow-Origin", "http://localhost:5173")
+                    .header("Access-Control-Allow-Credentials", "true")
+                    .header("Access-Control-Allow-Methods", "GET")
+                    .body(user.toDtoJson().toString())
             },
             "/callback" bind Method.GET to oauthProvider.callback
         )
+
     )
 }
