@@ -1,3 +1,3 @@
 import * as React from 'react'
 
-export const AuthenticationContext = React.createContext({username: "username", email: "email"})
+export const AuthenticationContext = React.createContext({username: "username", email: "email", valid: false})

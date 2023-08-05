@@ -13,7 +13,8 @@ function getOnfulfilled(setAuth: (user: User) => void) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
                     username: data["username"],
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-                    email: data["email"]
+                    email: data["email"],
+                    valid: true
                 }
                 setAuth(user)
                 return true
