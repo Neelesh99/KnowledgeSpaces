@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -24,9 +24,14 @@ function App() {
             })
     }
 
-    // useEffect(() => {
-    //     login();
-    // }, [])
+    function getUserWithoutLogin() {
+        void getUser(prefix, setUser).then(
+            (result) => {})
+    }
+
+    useEffect(() => {
+        getUserWithoutLogin();
+    }, [])
 
     console.log(user)
 
