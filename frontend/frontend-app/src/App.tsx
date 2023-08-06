@@ -6,9 +6,7 @@ import './index.css'
 import {AuthenticationContext} from "./service/AuthenticationContext";
 import {User} from "./model/UserDataModel";
 import {getUser} from "./service/UserAuthenticationService";
-import {NavigationButton} from "./components/NavigationButton";
 import {NavigationBar} from "./components/NavigationBar";
-import {LoginButton} from "./components/LoginButton";
 
 function App() {
     const [count, setCount] = useState(0)
@@ -19,7 +17,7 @@ function App() {
         void getUser(prefix, setUser).then(
             (result) => {
                 if (!result) {
-                    window.location.href = prefix + "/oauth"
+                    window.location.replace( prefix + "/oauth")
                 }
             })
     }
@@ -33,16 +31,10 @@ function App() {
         getUserWithoutLogin();
     }, [])
 
-    console.log(user)
-
   return (
       <AuthenticationContext.Provider value={user}>
           <>
-              <NavigationBar/>
-              <div className="flex">
-                  <NavigationButton title="Home"/>
-                  <LoginButton title={user.valid ? user.username : "Login"} loginFunction={login}/>
-              </div>
+              <NavigationBar {...{user: user, loginFunction: login}}/>
               <div>
                   <a href="https://vitejs.dev" target="_blank">
                       <img src={viteLogo} className="logo" alt="Vite logo" />
