@@ -17,14 +17,16 @@ function App() {
         void getUser(prefix, setUser).then(
             (result) => {
                 if (!result) {
-                    window.location.replace( prefix + "/oauth")
+                    // fetch(prefix + "/oauth")
+                    window.location = prefix + "/oauth/sd?referralUrl=" + window.location;
                 }
             })
     }
 
     function getUserWithoutLogin() {
         void getUser(prefix, setUser).then(
-            (result) => {})
+            (result) => {
+            })
     }
 
     useEffect(() => {

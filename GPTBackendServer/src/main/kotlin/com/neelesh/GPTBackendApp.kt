@@ -59,6 +59,18 @@ private fun routingHttpHandler(descriptionPath: String) = "docs" bind Method.GET
 
 private const val API_DESCRIPTION_PATH = "/contract/api/v1/swagger.json"
 
+class AttachReferrerFilter(val authFilter: Filter) {
+    fun invoke(request: Request): Response {
+        val requestLink = request.uri.query.split("=")[1]
+        val then = authFilter.then {
+            Response(Status.TEMPORARY_REDIRECT)
+                .header("Location", requestLink)
+        }
+        return then(request)
+    }
+
+}
+
 fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): HttpHandler {
 
     val oauthProvider = OAuthProvider.google(
@@ -139,10 +151,11 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
 
         "/oauth" bind routes(
             "/" bind Method.GET to oauthProvider.authFilter.then {
-                val cookie = it.cookie("securityServerAuth")
-                val user = userCollection.findOne(User::cookieSwapString eq cookie!!.value)!!
                 Response(Status.TEMPORARY_REDIRECT)
                     .header("Location", it.header("Referer"))
+            },
+            "/sd" bind Method.GET to {
+                AttachReferrerFilter(oauthProvider.authFilter).invoke(it)
             },
             "/getUser" bind Method.GET to {
                 val cookie = it.cookie("securityServerAuth")
