@@ -33,6 +33,14 @@ function App() {
         getUserWithoutLogin();
     }, [])
 
+    function generate() {
+        const elems = []
+        for(let i = 0; i < 30; i++) {
+            elems.push(<p>Hello here is some stuff</p>)
+        }
+        return elems;
+    }
+
   return (
       <AuthenticationContext.Provider value={user}>
           <>
@@ -60,6 +68,7 @@ function App() {
               <p className="read-the-docs">
                   Click on the Vite and React logos to learn more
               </p>
+              {generate()}
           </>
       </AuthenticationContext.Provider>
   )
