@@ -2,7 +2,7 @@ import SubmitQuery from "../components/QueryType";
 
 export default function Query() {
 
-    const queryValue = "Some response"
+    const queryResponse = "Some response"
 
     return <div className="flex flex-col p-12">
         <div className="text-6xl font-special">Query</div>
@@ -14,7 +14,7 @@ export default function Query() {
                 <SubmitQuery/>
             </div>
             <div className="p-2">
-                {queryValue}
+                {queryResponse}
             </div>
         </div>
     </div>
