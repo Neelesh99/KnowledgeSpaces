@@ -3,3 +3,9 @@ export interface SimpleQueryRequest {
     knowledgeFileTarget: string,
     query: string
 }
+
+export interface SimpleSpaceQueryRequest {
+    email: string,
+    knowledgeSpaceTarget: string,
+    query: string
+}
