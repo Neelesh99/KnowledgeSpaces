@@ -1,14 +1,28 @@
 import {Dialog, Transition} from '@headlessui/react'
-import {Fragment, useState} from 'react'
+import {Fragment, useContext, useState} from 'react'
+import {QueryContext} from "../service/QueryContext";
+import {sendQueryRequest} from "../service/QueryService";
+import {AuthenticationContext} from "../service/AuthenticationContext";
+import {SimpleQueryRequest} from "../model/QueryModel";
 
 export default function SubmitQuery() {
     const [isOpen, setIsOpen] = useState(false)
+    const query = useContext(QueryContext)
+    const user = useContext(AuthenticationContext)
 
     function closeModal() {
         setIsOpen(false)
     }
 
     function openModal() {
+        const queryRequest: SimpleQueryRequest = {
+            email: user.email,
+            knowledgeFileTarget: query.knowledgeFileTarget.id,
+            query: query.queryString
+        }
+        void sendQueryRequest("http://localhost:9000", queryRequest).then( (data) =>
+            console.log(data)
+        );
         setIsOpen(true)
     }
 
