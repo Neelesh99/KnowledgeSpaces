@@ -68,7 +68,7 @@ export default function SubmitQuery() {
                                         as="h3"
                                         className="text-lg font-medium leading-6 text-gray-900"
                                     >
-                                        Submission succesfull
+                                        Submission successful
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-500">
