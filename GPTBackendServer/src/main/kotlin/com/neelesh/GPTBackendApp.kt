@@ -23,8 +23,12 @@ import org.http4k.contract.openapi.v3.OpenApi3
 import org.http4k.contract.security.ApiKeySecurity
 import org.http4k.core.*
 import org.http4k.core.cookie.cookie
+import org.http4k.filter.AnyOf
+import org.http4k.filter.CorsPolicy
+import org.http4k.filter.OriginPolicy
+import org.http4k.filter.ServerFilters
 import org.http4k.lens.Query
-import org.http4k.lens.int
+import org.http4k.lens.string
 import org.http4k.routing.ResourceLoader.Companion.Classpath
 import org.http4k.routing.bind
 import org.http4k.routing.routes
@@ -114,7 +118,15 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
         UUIDGenerator()
     )
 
-    return routes(
+    val corsPolicy = CorsPolicy(
+        originPolicy = OriginPolicy.AnyOf("http://localhost:5173"), // TODO Replace with the appropriate client origin(s)
+        headers = listOf("Content-Type", "Authorization"), // TODO Consider adding back Authorization
+        methods = listOf(Method.GET, Method.POST /*, Method.PUT, Method.DELETE */) // TODO Double Check Completeness
+    )
+
+    val corsMiddleware = ServerFilters.Cors(corsPolicy)
+
+    return corsMiddleware.then(routes(
         "/ping" bind Method.GET to {
             Response(Status.OK).body("pong")
         },
@@ -130,7 +142,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             descriptionPath = "/swagger.json"
 
             // You can use security filter tio protect routes
-            security = ApiKeySecurity(Query.int().required("api"), { it == 42 }) // Allow only requests with &api=42
+            security = ApiKeySecurity(Query.string().required("api"), { it == "42" }) // Allow only requests with &api=42
 
             // Add contract routes
             routes += ExampleContractRoute()
@@ -169,5 +181,5 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): 
             "/callback" bind Method.GET to oauthProvider.callback
         )
 
-    )
+    ))
 }

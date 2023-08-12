@@ -17,7 +17,7 @@ export function convertSimpleUploadRequestToForData(simpleUploadRequest: SimpleB
 }
 
 export async function sendUploadForm(prefix: string, formData: FormData) : Promise<string> {
-    const url = prefix + "/contract/api/v1/upload/blob&api=42"
+    const url = prefix + "/contract/api/v1/upload/blob?api=42"
     return await fetch(url, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

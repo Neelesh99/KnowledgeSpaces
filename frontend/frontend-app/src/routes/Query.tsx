@@ -15,13 +15,11 @@ export default function Query() {
         <div className="flex flex-col p-12">
             <div className="text-6xl font-special">Query</div>
             <div className="flex flex-col space-y-4">
-                <div className="flex pt-12 items-center">
-                    <div className="bg-sky-100 h-full p-2 rounded-md">
-                        <input className="text-2xl bg-transparent" type="text" placeholder="Input query" onChange={ (e) => setQuery(e.target.value) }/>
-                    </div>
-                    <KnowledgeFilePicker setChosenFile={setChosenFile}/>
-                    <SubmitQuery/>
+                <KnowledgeFilePicker setChosenFile={setChosenFile}/>
+                <div className="bg-sky-100 h-full p-2 w-fit rounded-md">
+                    <input className="text-2xl bg-transparent" type="text" placeholder="Input query" onChange={ (e) => setQuery(e.target.value) }/>
                 </div>
+                <SubmitQuery/>
                 <div className="p-2">
                     {queryResponse}
                 </div>

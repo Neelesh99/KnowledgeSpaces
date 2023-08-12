@@ -30,7 +30,10 @@ object QueryRequestRoute {
             }, {
                 Response(Status.OK).body(it)
             }
-        )
+        ).header("Access-Control-Allow-Origin", "http://localhost:5173")
+            .header("Access-Control-Allow-Credentials", "true")
+            .header("Access-Control-Allow-Headers", "content-type")
+            .header("Access-Control-Allow-Methods", "POST")
     }
 
     operator fun invoke(queryRequestHandler: QueryRequestHandler): ContractRoute = spec to echo(queryRequestHandler)
