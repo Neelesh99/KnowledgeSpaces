@@ -9,7 +9,6 @@ import com.neelesh.model.KnowledgeFile
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
-import java.lang.Exception
 
 class MongoBackedKnowledgeFileStore(private val knowledgeFileCollection: MongoCollection<KnowledgeFile>) : KnowledgeFileStore {
     override fun getKnowledgeFile(knowledgeFileId: String, email: String): Either<Exception, KnowledgeFile> {
@@ -28,5 +27,9 @@ class MongoBackedKnowledgeFileStore(private val knowledgeFileCollection: MongoCo
             ReplaceOptions().upsert(true)
         )
         return if(result.wasAcknowledged()) knowledgeFile.right() else Exception("Could not save knowledge file").left()
+    }
+
+    override fun listFilesForEmail(email: String): Either<Exception, List<KnowledgeFile>> {
+        return knowledgeFileCollection.find(KnowledgeFile::email eq email).toList().right()
     }
 }

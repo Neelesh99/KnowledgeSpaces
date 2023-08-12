@@ -22,6 +22,13 @@ data class KnowledgeFile(
         )
     }
 
+    fun toDtoJson() : JsonNode {
+        return Jackson.obj(
+            "id" to string(id),
+            "name" to string(name),
+        )
+    }
+
     companion object {
 
         fun fromJson(jsonNode: JsonNode) : KnowledgeFile {

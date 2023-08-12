@@ -2,6 +2,7 @@ package com.neelesh.persistence
 
 import arrow.core.right
 import com.neelesh.model.KnowledgeFile
+import com.neelesh.routes.SimpleFilesRequest
 import com.neelesh.routes.SimpleKnowledgeFileCreationRequest
 import com.neelesh.routes.SimpleKnowledgeFileUpdateRequest
 import com.neelesh.util.UUIDGenerator
@@ -9,6 +10,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 
 class KnowledgeFileHandlerTest {
 
@@ -62,6 +64,28 @@ class KnowledgeFileHandlerTest {
         val id = knowledgeFileHandler.update(simpleKnowledgeFileUpdateRequest)
 
         Assertions.assertEquals("someId".right(), id)
+    }
+
+    @Test
+    fun `will return list of file dto jsons`() {
+        val email = "someEmail"
+        val expectedKnowledgeFile = KnowledgeFile(
+            "someId",
+            email,
+            "knowledgeFileName",
+            emptyList(),
+            "{}"
+        )
+        every { knowledgeFileStore.listFilesForEmail(email) } returns listOf(expectedKnowledgeFile).right()
+        val response = knowledgeFileHandler.getForEmail(SimpleFilesRequest(email))
+        response.fold(
+            {
+                fail("Should not have thrown exception: ${it.message}")
+            },
+            {
+                expectedArr -> expectedArr.get(0).get("id").textValue() == "someId"
+            }
+        )
     }
 
 }

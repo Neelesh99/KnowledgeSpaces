@@ -5,7 +5,6 @@ import arrow.core.left
 import arrow.core.right
 import com.neelesh.model.KnowledgeFile
 import com.neelesh.persistence.KnowledgeFileStore
-import java.lang.Exception
 
 class InMemoryKnowledgeFileStore(val existingFiles: List<KnowledgeFile>) : KnowledgeFileStore {
 
@@ -24,6 +23,10 @@ class InMemoryKnowledgeFileStore(val existingFiles: List<KnowledgeFile>) : Knowl
             fileStore.add(knowledgeFile)
         }
         return knowledgeFile.right()
+    }
+
+    override fun listFilesForEmail(email: String): Either<Exception, List<KnowledgeFile>> {
+        return fileStore.filter { knowledgeFile -> knowledgeFile.email == email }.right()
     }
 
 
