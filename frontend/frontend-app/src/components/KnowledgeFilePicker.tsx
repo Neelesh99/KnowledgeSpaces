@@ -1,9 +1,11 @@
-import {Fragment, useState} from 'react'
+import {Fragment, useContext, useEffect, useState} from 'react'
 import {Combobox, Transition} from '@headlessui/react'
 import {CheckIcon, ChevronUpDownIcon} from '@heroicons/react/20/solid'
-import {ChosenKnowledgeFile} from "../model/KnowledgeFile";
+import {KnowledgeFile, SimpleFilesRequest} from "../model/KnowledgeFile";
+import {AuthenticationContext} from "../service/AuthenticationContext";
+import {getFilesForEmail} from "../service/FilesService";
 
-const files: ChosenKnowledgeFile[] = [
+const defaultFiles: KnowledgeFile[] = [
     { id: "1", fileName: 'Default' },
     { id: "2", fileName: 'SomeKnowledgeFile' },
     { id: "3", fileName: 'SomeOtherKnowledgeFile' },
@@ -17,8 +19,17 @@ export interface KnowledgeFilePickerProps {
 }
 
 export default function KnowledgeFilePicker(props: KnowledgeFilePickerProps) {
-    const [selected, setSelected] = useState(files[0])
+    const [files, setFiles] = useState(defaultFiles)
+    const [selected, setSelected] = useState(files.length > 0 ? files[0] : defaultFiles[0])
     const [query, setQuery] = useState('')
+
+    const user = useContext(AuthenticationContext)
+    useEffect(() => {
+        const email = user.email
+        const simpleFilesRequest: SimpleFilesRequest = {email: email}
+        const prefix = "http://localhost:9000"
+        void getFilesForEmail(prefix, simpleFilesRequest).then((files) => {setFiles(files)})
+    }, [])
 
     const filteredPeople =
         query === ''

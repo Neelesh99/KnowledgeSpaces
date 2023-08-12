@@ -1,9 +1,9 @@
 import * as React from "react";
-import {ChosenKnowledgeFile, DEFAULT} from "../model/KnowledgeFile";
+import {DEFAULT, KnowledgeFile} from "../model/KnowledgeFile";
 
 export interface Query {
     queryString: string,
-    knowledgeFileTarget: ChosenKnowledgeFile
+    knowledgeFileTarget: KnowledgeFile
 }
 
 export const QueryContext = React.createContext({queryString: "", knowledgeFileTarget: DEFAULT})

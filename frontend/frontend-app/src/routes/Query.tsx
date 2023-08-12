@@ -2,13 +2,13 @@ import SubmitQuery from "../components/QueryType";
 import {useState} from "react";
 import {QueryContext} from "../service/QueryContext";
 import KnowledgeFilePicker from "../components/KnowledgeFilePicker";
-import {ChosenKnowledgeFile} from "../model/KnowledgeFile";
+import {KnowledgeFile} from "../model/KnowledgeFile";
 
 export default function Query() {
 
     const queryResponse = "Some response"
     const [query, setQuery] = useState("")
-    const [chosenFile, setChosenFile] = useState<ChosenKnowledgeFile>({id: "someId",
+    const [chosenFile, setChosenFile] = useState<KnowledgeFile>({id: "someId",
         fileName: "default"})
 
     return <QueryContext.Provider value={{queryString: query, knowledgeFileTarget: chosenFile}}>
