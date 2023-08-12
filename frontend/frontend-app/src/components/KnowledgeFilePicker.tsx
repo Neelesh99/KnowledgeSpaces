@@ -28,7 +28,10 @@ export default function KnowledgeFilePicker(props: KnowledgeFilePickerProps) {
         const email = user.email
         const simpleFilesRequest: SimpleFilesRequest = {email: email}
         const prefix = "http://localhost:9000"
-        void getFilesForEmail(prefix, simpleFilesRequest).then((files) => {setFiles(files)})
+        void getFilesForEmail(prefix, simpleFilesRequest).then((files) => {
+            console.log(files)
+            setFiles(files)
+        })
     }, [])
 
     const filteredPeople =

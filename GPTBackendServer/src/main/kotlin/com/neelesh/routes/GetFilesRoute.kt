@@ -4,7 +4,9 @@ import com.neelesh.persistence.KnowledgeFileHandler
 import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.*
+import org.http4k.format.Jackson
 import org.http4k.format.Jackson.auto
+import org.http4k.format.Jackson.string
 
 data class SimpleFilesRequest(val email: String)
 
@@ -19,6 +21,8 @@ object GetFilesRoute {
         receiving(simpleFilesRequest to SimpleFilesRequest("jim@hotmail.com"))
         returning(Status.OK, simpleFilesRequest to SimpleFilesRequest("jim@hotmail.com"))
     } bindContract Method.POST
+
+    private val DEFAULT = Jackson.array(listOf(Jackson.obj("id" to string("someId"), "name" to string("A cool filename"))))
 
     // note that because we don't have any dynamic parameters, we can use a HttpHandler instance instead of a function
     private fun echo(knowledgeFileHandler: KnowledgeFileHandler): HttpHandler = { request: Request ->
