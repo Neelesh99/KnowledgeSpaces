@@ -2,6 +2,7 @@ import StoreTabs from "../components/StoreTabs";
 import KnowledgeFilePicker from "../components/KnowledgeFilePicker";
 import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext";
 import {useState} from "react";
+import {NewKnowledgeFile} from "../components/NewKnowledgeFile";
 
 export default function Store() {
 
@@ -18,7 +19,7 @@ export default function Store() {
                     <StoreTabs/>
                 </div>
                 <div className="p-2">
-                    {queryResponse}
+                    <NewKnowledgeFile/>
                 </div>
             </div>
         </div>

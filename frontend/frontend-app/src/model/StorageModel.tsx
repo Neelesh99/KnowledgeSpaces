@@ -6,4 +6,9 @@ export interface SimpleBlobUploadRequest {
     email: string
 }
 
+export interface SimpleKnowledgeFileCreationRequest {
+    knowledgeFileName: string,
+    email: string
+}
+
 export type DataType = "PDF_DOCUMENT" | "WEB_LINK" | "YOUTUBE_LINK" | "PLAIN_TEXT"

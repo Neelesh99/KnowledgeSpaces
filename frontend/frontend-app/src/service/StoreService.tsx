@@ -1,4 +1,4 @@
-import {SimpleBlobUploadRequest} from "../model/StorageModel";
+import {SimpleBlobUploadRequest, SimpleKnowledgeFileCreationRequest} from "../model/StorageModel";
 
 export function convertTextToBlob(text: string) : Blob {
     return new Blob([text], {
@@ -21,6 +21,21 @@ export async function sendUploadForm(prefix: string, formData: FormData) : Promi
     return await fetch(url, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         body: formData, // body data type must match "Content-Type" header
+    }).then((response) => {
+        return response.text().then((data) => {
+            return data
+        })
+    })
+}
+
+export async function sendCreateKnowledgeFile(prefix: string, simpleCreateFileRequest: SimpleKnowledgeFileCreationRequest) : Promise<string> {
+    const url = prefix + "/contract/api/v1/knowledgeFile/create?api=42"
+    return await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(simpleCreateFileRequest), // body data type must match "Content-Type" header
     }).then((response) => {
         return response.text().then((data) => {
             return data
