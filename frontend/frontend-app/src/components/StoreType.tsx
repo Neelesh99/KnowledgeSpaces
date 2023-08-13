@@ -1,14 +1,34 @@
 import {Dialog, Transition} from '@headlessui/react'
-import {Fragment, useState} from 'react'
+import {Fragment, useContext, useState} from 'react'
+import {convertSimpleUploadRequestToForData, convertTextToBlob, sendUploadForm} from "../service/StoreService";
+import {SimpleBlobUploadRequest} from "../model/StorageModel";
+import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext";
+import {AuthenticationContext} from "../service/AuthenticationContext";
 
-export default function StoreType() {
+export interface StoreTypeProps {
+    text: string,
+    targetFile: string
+}
+
+export default function StoreType(props: StoreTypeProps) {
     const [isOpen, setIsOpen] = useState(false)
-
+    const targetFile = useContext(ChosenKnowledgeFileContext)
+    const user = useContext(AuthenticationContext)
     function closeModal() {
         setIsOpen(false)
     }
 
     function openModal() {
+        const blob = convertTextToBlob(props.text)
+        const simpleUploadRequest: SimpleBlobUploadRequest = {
+            type: "PLAIN_TEXT",
+            fileName: "TextInput" + new Date().toDateString() + ".txt",
+            dataStream: blob,
+            knowledgeFileTarget: targetFile.id,
+            email: user.email
+        }
+        const formData = convertSimpleUploadRequestToForData(simpleUploadRequest)
+        void sendUploadForm("http://localhost:9000", formData).then(r => console.log(r))
         setIsOpen(true)
     }
 

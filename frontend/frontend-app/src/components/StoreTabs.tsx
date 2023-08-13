@@ -17,6 +17,8 @@ export default function StoreTabs() {
         ],
     })
 
+    const [text, setText] = useState("")
+
     return (
         <div className="w-full max-w-md px-2 py-16 sm:px-0">
             <Tab.Group>
@@ -48,9 +50,9 @@ export default function StoreTabs() {
                     >
                         <div className="flex items-center">
                             <div className="bg-slate-100 h-full p-2 rounded-md">
-                                <input className="text-2xl bg-transparent" type="text" placeholder="Input data"/>
+                                <input className="text-2xl bg-transparent" type="text" placeholder="Input data" onChange={(e) => setText(e.target.value)}/>
                             </div>
-                            <StoreType/>
+                            <StoreType {...{text: text}}/>
                         </div>
                     </Tab.Panel>
                     <Tab.Panel
