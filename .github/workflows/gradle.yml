@@ -27,9 +27,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Set up homebrew
+        run: /home/linuxbrew/.linuxbrew/bin/brew shellenv
       - name: Build with Gradle
         run: |
-          /home/linuxbrew/.linuxbrew/bin/brew shellenv
           brew install gradle
           cd GPTBackendServer
           gradle clean
