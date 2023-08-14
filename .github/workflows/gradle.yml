@@ -30,7 +30,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd GPTBackendServer
-          sh gradlew
+          sh gradlew build
       - name: Test with Gradle
         run: |
           cd GPTBackendServer
