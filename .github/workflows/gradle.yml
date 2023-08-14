@@ -31,3 +31,7 @@ jobs:
         run: |
           cd GPTBackendServer
           sh gradlew
+      - name: Test with Gradle
+        run: |
+          cd GPTBackendServer
+          sh gradlew test
