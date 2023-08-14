@@ -16,6 +16,9 @@ data class Config(
 ) {
 
     companion object {
+
+        val DEFAULT = fromEnvironment(Environment.ENV)
+
         fun fromEnvironment(environment: Environment) : Config {
             return Config(
                 googleClientIdLens(environment),
