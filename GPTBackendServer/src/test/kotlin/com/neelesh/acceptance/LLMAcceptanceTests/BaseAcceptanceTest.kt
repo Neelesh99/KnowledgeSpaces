@@ -4,6 +4,7 @@ import com.neelesh.GPTUserApp
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeFileStore
 import com.neelesh.acceptance.Stubs.InMemoryKnowledgeSpaceStore
 import com.neelesh.acceptance.Stubs.StubLLMApp
+import com.neelesh.config.Config
 import com.neelesh.config.Dependencies
 import com.neelesh.storage.BlobStore
 import com.neelesh.storage.InMemoryBlobStore
@@ -29,7 +30,8 @@ open class BaseAcceptanceTest {
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, inMemoryKnowledgeSpaceStore, InsecureCookieBasedOAuthPersistence("someCookie"))
+            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, inMemoryKnowledgeSpaceStore, InsecureCookieBasedOAuthPersistence("someCookie")),
+            Config.DEFAULT
         )
         return server.asServer(Undertow(port = port)).start()
     }

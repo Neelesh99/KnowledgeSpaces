@@ -1,5 +1,6 @@
 package com.neelesh
 
+import com.neelesh.config.Config
 import com.neelesh.config.Dependencies
 import com.neelesh.model.KnowledgeFile
 import com.neelesh.model.KnowledgeSpace
@@ -10,6 +11,7 @@ import com.neelesh.storage.InMemoryBlobStore
 import com.neelesh.user.MongoBasedOAuthPersistence
 import com.neelesh.user.User
 import org.http4k.client.OkHttp
+import org.http4k.cloudnative.env.Environment
 import org.http4k.core.HttpHandler
 import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters.PrintRequest
@@ -23,7 +25,8 @@ import java.time.Clock
 
 fun main() {
     val client: HttpHandler = OkHttp()
-    val mongoClient = KMongo.createClient("mongodb+srv://firehzb:$mongodbPass@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
+    val config = Config.fromEnvironment(Environment.ENV)
+    val mongoClient = KMongo.createClient("mongodb+srv://firehzb:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
     val db = mongoClient.getDatabase("myStuff")
     val userCollection = db.getCollection<User>("user")
     val mongoOAuthPersistence = MongoBasedOAuthPersistence(userCollection, Clock.systemUTC(), InsecureTokenChecker)
@@ -36,7 +39,7 @@ fun main() {
     )
 
     val printingApp: HttpHandler = PrintRequest().then(
-            GPTUserApp(mongoOAuthPersistence, dependencies))
+            GPTUserApp(mongoOAuthPersistence, dependencies, config))
 
     val server = printingApp.asServer(Undertow(9000)).start()
 

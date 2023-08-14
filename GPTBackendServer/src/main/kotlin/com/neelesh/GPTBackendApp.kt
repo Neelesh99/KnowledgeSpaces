@@ -1,5 +1,6 @@
 package com.neelesh
 
+import com.neelesh.config.Config
 import com.neelesh.config.Dependencies
 import com.neelesh.formats.JacksonMessage
 import com.neelesh.formats.jacksonMessageLens
@@ -12,7 +13,6 @@ import com.neelesh.routes.*
 import com.neelesh.security.InMemoryOAuthPersistence
 import com.neelesh.security.InsecureTokenChecker
 import com.neelesh.storage.BlobHandler
-import com.neelesh.user.MongoBasedOAuthPersistence
 import com.neelesh.user.User
 import com.neelesh.util.UUIDGenerator
 import org.http4k.client.JavaHttpClient
@@ -49,9 +49,7 @@ import java.time.Clock
 // implemented by application developers
 val inMemoryOAuthPersistence = InMemoryOAuthPersistence(Clock.systemUTC(), InsecureTokenChecker)
 
-val mongoClient = KMongo.createClient("mongodb+srv://firehzb:$mongodbPass@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
-val userCollection = mongoClient.getDatabase("myStuff").getCollection<User>("user")
-val mongoOAuthPersistence = MongoBasedOAuthPersistence(userCollection, Clock.systemUTC(), InsecureTokenChecker)
+
 // pre-defined configuration exist for common OAuth providers
 
 
@@ -75,11 +73,14 @@ class AttachReferrerFilter(val authFilter: Filter) {
 
 }
 
-fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies): HttpHandler {
+fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, config: Config): HttpHandler {
+
+    val mongoClient = KMongo.createClient("mongodb+srv://firehzb:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
+    val userCollection = mongoClient.getDatabase("myStuff").getCollection<User>("user")
 
     val oauthProvider = OAuthProvider.google(
         JavaHttpClient(),
-        Credentials(googleClientId, googleClientSecret),
+        Credentials(config.googleClientId, config.googleClientSecret),
         Uri.of("http://localhost:9000/oauth/callback"),
         oAuthPersistence,
         scopes = listOf("openid", "email", "profile")
