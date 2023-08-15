@@ -27,6 +27,7 @@ function App() {
     function getUserWithoutLogin() {
         void getUser(prefix, setUser).then(
             (result) => {
+                console.log(result)
             })
     }
 

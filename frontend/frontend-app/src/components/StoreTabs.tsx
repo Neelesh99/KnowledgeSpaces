@@ -3,7 +3,7 @@ import {Tab} from '@headlessui/react'
 import StoreType from "./StoreType";
 import StoreLink from "./StoreLink";
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 

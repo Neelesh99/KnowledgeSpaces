@@ -1,5 +1,9 @@
 import {KnowledgeFile, SimpleFilesRequest} from "../model/KnowledgeFile";
 
+interface FileJson {
+    id: string,
+    name: string
+}
 
 export async function getFilesForEmail(prefix: string, simpleFilesRequest: SimpleFilesRequest) : Promise<KnowledgeFile[]> {
     const url = prefix + "/contract/api/v1/getFiles?api=42"
@@ -13,9 +17,10 @@ export async function getFilesForEmail(prefix: string, simpleFilesRequest: Simpl
         return response.json().then((data) => {
             const result: KnowledgeFile[] = []
             data.forEach((fileJson: object) => {
+                const normalised = fileJson as FileJson
                 result.push({
-                    id: fileJson["id"] as string,
-                    fileName: fileJson["name"] as string
+                    id: normalised.id,
+                    fileName: normalised.name
                 })
             })
             return result

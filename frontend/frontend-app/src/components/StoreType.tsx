@@ -6,8 +6,7 @@ import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext"
 import {AuthenticationContext} from "../service/AuthenticationContext";
 
 export interface StoreTypeProps {
-    text: string,
-    targetFile: string
+    text: string
 }
 
 export default function StoreType(props: StoreTypeProps) {

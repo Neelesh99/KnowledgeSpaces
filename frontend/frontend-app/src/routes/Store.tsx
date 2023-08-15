@@ -8,8 +8,6 @@ export default function Store() {
 
     const [chosenFile, setChosenFile] = useState({id: "default", fileName: "default"})
 
-    const queryResponse = "Some response"
-
     return <ChosenKnowledgeFileContext.Provider value={chosenFile}>
         <div className="flex flex-col p-12">
             <div className="text-6xl font-special">Store</div>
