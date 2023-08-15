@@ -19,7 +19,7 @@ function App() {
         void getUser(prefix, setUser).then(
             (result) => {
                 if (!result) {
-                    window.location = prefix + "/oauth/sd?referralUrl=" + window.location;
+                    window.location.assign(prefix + "/oauth/sd?referralUrl=" + window.location.toString())
                 }
             })
     }
