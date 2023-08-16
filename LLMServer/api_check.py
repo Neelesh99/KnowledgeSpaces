@@ -1,5 +1,6 @@
 import json
 
+import uvicorn
 from fastapi import Request, FastAPI
 from llama_index import Document, \
     StringIterableReader
@@ -100,3 +101,6 @@ async def handle_space_query(request: Request):
             summaries.append(knowledgeFile.name)
         graph = compose_graph_hf(indices, summaries)
         return graph.query(query).response
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=2323)
