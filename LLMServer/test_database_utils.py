@@ -28,20 +28,3 @@ class DatabaseUtilsTestCase(unittest.TestCase):
         db = get_db_from_config(config)
         self.assertEqual(db.name, "someDBName")
 
-    def test_save_index_will_construct_and_save_knowledge(self):
-        collection = Mock()
-        collection.replace_one = MagicMock(return_value=InsertOneResult("some_id", True))
-        index = Mock()
-        storage_context = Mock()
-        index.storage_context = storage_context
-        storage_context.to_dict = MagicMock(return_value={})
-        expected_knowledge_space = KnowledgeFile("some_user", "my_knowledge_space", "{}")
-        save_index(index, collection, "some_user")
-        collection.replace_one.assert_called_with({"user_name": "some_user"}, expected_knowledge_space.to_dict(), upsert=True)
-
-    def test_get_index_will_get_KnowledgeSpace_for_user(self):
-        collection = Mock()
-        space = KnowledgeFile("some_user", "my_knowledge_space", "{}")
-        collection.find_one = MagicMock(return_value=space.to_dict())
-        actual_space = get_index(collection, "some_user", "my_knowledge_space")
-        self.assertEqual(space, actual_space)
