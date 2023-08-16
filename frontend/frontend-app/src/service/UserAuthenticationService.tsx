@@ -9,6 +9,7 @@ function getOnfulfilled(setAuth: (user: User) => void) {
     return (success: Response) => {
         return success.json().then(
             (data) => {
+                console.log(data)
                 const user: User = {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
                     username: data["username"],

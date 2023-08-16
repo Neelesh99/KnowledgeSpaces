@@ -21,7 +21,7 @@ class UploadBlobAcceptanceTest : BaseAcceptanceTest() {
             "someKnowledgeFileId",
             "someEmail",
             "someKnowledgeFileName",
-            listOf("someBlobId"),
+            listOf(),
             "{}"
         )
         inMemoryKnowledgeFileStore.saveKnowledgeFile(knowledgeFile)
@@ -41,10 +41,9 @@ class UploadBlobAcceptanceTest : BaseAcceptanceTest() {
         val testClient = OkHttp()
         val response = testClient(request)
         assertEquals(Status.OK, response.status)
-        assertEquals(response.bodyString(), "someKnowledgeFileId")
-        assertEquals("someKnowledgeFileId", response.bodyString())
+        assertEquals("someRunId", response.bodyString())
         val updatedKnowledgeFile = inMemoryKnowledgeFileStore.fileStore[0]
-        val blobId = updatedKnowledgeFile.blobIds[1]
+        val blobId = updatedKnowledgeFile.blobIds[0]
         val expectedReference = BlobReference(
             blobId,
             DataType.PLAIN_TEXT,

@@ -1,5 +1,7 @@
 package com.neelesh.routes
 
+import arrow.core.flatMap
+import com.neelesh.llm.IndexRequestHandler
 import com.neelesh.model.DataType
 import com.neelesh.storage.BlobHandler
 import org.http4k.contract.ContractRoute
@@ -26,7 +28,7 @@ object UploadBlobRoute {
     } bindContract Method.POST
 
     // note that because we don't have any dynamic parameters, we can use a HttpHandler instance instead of a function
-    private fun echo(blobHandler: BlobHandler): HttpHandler = { request: Request ->
+    private fun echo(blobHandler: BlobHandler, indexRequestHandler: IndexRequestHandler): HttpHandler = { request: Request ->
         val received = MultipartFormBody.from(request)
         val uploadRequest = SimpleBlobUploadRequest(
             DataType.valueOf(received.field("dataType")!!.value),
@@ -35,8 +37,14 @@ object UploadBlobRoute {
             received.field("knowledgeFileTarget")!!.value,
             received.field("email")!!.value
         )
+        val indexRequest = SimpleIndexRequest(
+            uploadRequest.email,
+            uploadRequest.knowledgeFileTarget
+        )
         val result = blobHandler.upload(uploadRequest)
-        result.fold(
+        result
+            .flatMap { indexRequestHandler.handle(indexRequest) }
+            .fold(
             {
                 Response(Status.INTERNAL_SERVER_ERROR).body(it.message ?: "Internal Server Error")
             }, {
@@ -48,5 +56,5 @@ object UploadBlobRoute {
             .header("Access-Control-Allow-Methods", "POST")
     }
 
-    operator fun invoke(blobHandler: BlobHandler): ContractRoute = spec to echo(blobHandler)
+    operator fun invoke(blobHandler: BlobHandler, indexRequestHandler: IndexRequestHandler): ContractRoute = spec to echo(blobHandler, indexRequestHandler)
 }

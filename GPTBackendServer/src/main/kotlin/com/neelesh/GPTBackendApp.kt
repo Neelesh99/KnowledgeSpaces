@@ -150,7 +150,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
             routes += IndexRequestRoute(indexRequestHandler)
             routes += QueryRequestRoute(queryRequestHandler)
             routes += SpaceQueryRequestRoute(spaceQueryRequestHandler)
-            routes += UploadBlobRoute(blobHandler)
+            routes += UploadBlobRoute(blobHandler, indexRequestHandler)
             routes += DownloadBlobRoute(blobHandler)
             routes += CreateKnowledgeFileRoute(knowledgeFileHandler)
             routes += UpdateKnowledgeFileRoute(knowledgeFileHandler)

@@ -1,6 +1,7 @@
 package com.neelesh.routes
 
 import arrow.core.right
+import com.neelesh.llm.IndexRequestHandler
 import com.neelesh.model.DataType
 import com.neelesh.storage.BlobHandler
 import io.mockk.every
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Test
 class UploadBlobRouteTest {
 
     val blobHandler = mockk<BlobHandler>()
-    val route = UploadBlobRoute(blobHandler)
+    val indexRequestHandler = mockk<IndexRequestHandler>()
+    val route = UploadBlobRoute(blobHandler, indexRequestHandler)
 
     @Test
     fun `will upload blob as multipart form`() {
@@ -26,6 +28,7 @@ class UploadBlobRouteTest {
             "someEmail"
         )
         every { blobHandler.upload(any()) } returns "someKnowledgeFileId".right()
+        every { indexRequestHandler.handle(SimpleIndexRequest("someEmail", "someKnowledgeFileId")) } returns "someKnowledgeFileId".right()
 
         val inputForm = MultipartFormBody().plus("dataType" to "PLAIN_TEXT")
             .plus("fileName" to "someFileName")

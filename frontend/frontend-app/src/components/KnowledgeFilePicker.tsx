@@ -32,7 +32,7 @@ export default function KnowledgeFilePicker(props: KnowledgeFilePickerProps) {
             console.log(files)
             setFiles(files)
         })
-    }, [])
+    }, [user.valid])
 
     const filteredPeople =
         query === ''

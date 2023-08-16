@@ -10,6 +10,7 @@ import com.neelesh.security.InsecureTokenChecker
 import com.neelesh.storage.InMemoryBlobStore
 import com.neelesh.user.MongoBasedOAuthPersistence
 import com.neelesh.user.User
+import okhttp3.OkHttpClient
 import org.http4k.client.OkHttp
 import org.http4k.cloudnative.env.Environment
 import org.http4k.core.HttpHandler
@@ -24,7 +25,22 @@ import java.time.Clock
 
 
 fun main() {
-    val client: HttpHandler = OkHttp()
+    val client1 = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val original = chain.request()
+            val originalUrl = original.url
+            val newUrl = originalUrl.newBuilder()
+                .scheme("http")
+                .host("localhost")
+                .port(2323)
+                .build()
+            val requestBuilder= original.newBuilder()
+                .url(newUrl)
+            val request= requestBuilder.build()
+            chain.proceed(request)
+        }
+        .build()
+    val client: HttpHandler = OkHttp(client1)
     val config = Config.fromEnvironment(Environment.ENV)
     val mongoClient = KMongo.createClient("mongodb+srv://firehzb:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
     val db = mongoClient.getDatabase("myStuff")
@@ -32,7 +48,7 @@ fun main() {
     val mongoOAuthPersistence = MongoBasedOAuthPersistence(userCollection, Clock.systemUTC(), InsecureTokenChecker)
     val dependencies = Dependencies(
         client,
-        InMemoryBlobStore(File("/storage")),
+        InMemoryBlobStore(File("/Users/neeleshravichandran/IdeaProjects/customGPTSlackbot/storage")),
         MongoBackedKnowledgeFileStore(db.getCollection<KnowledgeFile>("knowledgeFileCollection")),
         MongoBackedKnowledgeSpaceStore(db.getCollection<KnowledgeSpace>("knowledgeSpaceCollection")),
         mongoOAuthPersistence
