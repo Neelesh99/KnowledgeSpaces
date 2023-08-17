@@ -1,9 +1,10 @@
 package com.neelesh.llm
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
 import arrow.core.raise.either
-import com.neelesh.model.BlobReference
-import com.neelesh.model.DataType
+import arrow.core.right
 import com.neelesh.persistence.KnowledgeFileStore
 import com.neelesh.routes.SimpleIndexRequest
 import com.neelesh.storage.BlobStore
@@ -30,7 +31,7 @@ class IndexRequestHandler(
                 indexRequestDto.knowledgeFileTarget,
                 blobs
             )
-            val response = llmClient(Request(Method.POST, "/api/v1/llm/index").body(indexRequest).header("Content-Type", ContentType.MultipartFormWithBoundary(indexRequest.boundary).toHeaderValue()))
+            val response = llmClient(Request(Method.POST, "http:localhost:2323/api/v1/llm/index").body(indexRequest).header("Content-Type", ContentType.MultipartFormWithBoundary(indexRequest.boundary).toHeaderValue()))
             if (response.status != Status.OK) {
                 java.lang.Exception("Error from LLM API code: ${response.status.code}").left()
             } else {

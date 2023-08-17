@@ -5,7 +5,12 @@ import {sendQueryRequest} from "../service/QueryService";
 import {AuthenticationContext} from "../service/AuthenticationContext";
 import {SimpleQueryRequest} from "../model/QueryModel";
 
-export default function SubmitQuery() {
+
+export interface SubmitQueryProps {
+    setResponse: (str: string) => void
+}
+
+export default function SubmitQuery(props: SubmitQueryProps) {
     const [isOpen, setIsOpen] = useState(false)
     const query = useContext(QueryContext)
     const user = useContext(AuthenticationContext)
@@ -20,9 +25,10 @@ export default function SubmitQuery() {
             knowledgeFileTarget: query.knowledgeFileTarget.id,
             query: query.queryString
         }
-        void sendQueryRequest("http://localhost:9000", queryRequest).then( (data) =>
-            console.log(data)
-        );
+        void sendQueryRequest("http://localhost:9000", queryRequest).then( (data) => {
+                console.log(data);
+                props.setResponse(data)
+        });
         setIsOpen(true)
     }
 

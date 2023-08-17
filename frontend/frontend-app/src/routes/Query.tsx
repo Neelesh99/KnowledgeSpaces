@@ -6,7 +6,7 @@ import {KnowledgeFile} from "../model/KnowledgeFile";
 
 export default function Query() {
 
-    const queryResponse = "Some response"
+    const [queryResponse, setQueryResponse] = useState("Some response")
     const [query, setQuery] = useState("")
     const [chosenFile, setChosenFile] = useState<KnowledgeFile>({id: "someId",
         fileName: "default"})
@@ -19,7 +19,7 @@ export default function Query() {
                 <div className="bg-sky-100 h-full p-2 w-fit rounded-md">
                     <input className="text-2xl bg-transparent" type="text" placeholder="Input query" onChange={ (e) => setQuery(e.target.value) }/>
                 </div>
-                <SubmitQuery/>
+                <SubmitQuery setResponse={setQueryResponse}/>
                 <div className="p-2">
                     {queryResponse}
                 </div>
