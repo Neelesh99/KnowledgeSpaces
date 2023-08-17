@@ -36,7 +36,7 @@ def get_db_from_config(config: DatabaseConfig) -> Database:
     return client[config.db_name]
 
 def save_index_api(index: VectorStoreIndex, email: str, id: str, collection: Collection):
-    filter = {email: email, id: id}
+    filter = {"email": email, "id": id}
     oldData = collection.find_one(filter)
     oldData["indexDict"] = json.dumps(index.storage_context.to_dict())
     collection.replace_one(filter, oldData, upsert=True)
