@@ -1,6 +1,7 @@
 package com.neelesh.storage
 
 import com.google.cloud.storage.Blob
+import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
 import com.mongodb.client.MongoCollection
@@ -12,6 +13,9 @@ import io.mockk.mockk
 import io.mockk.slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
+import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import java.io.InputStream
 
 class GoogleBlobStoreTest {
@@ -35,5 +39,26 @@ class GoogleBlobStoreTest {
         Assertions.assertEquals("someBucketName", infoCapture.captured.bucket)
         Assertions.assertEquals("someId", infoCapture.captured.blobId.name)
         Assertions.assertEquals("someText", String(contentCapture.captured.readAllBytes()))
+    }
+
+    @Test
+    fun `will retrieve blob`() {
+        val infoCapture = slot<BlobId>()
+        val blobId = "someId"
+        val filename = "someFileName.txt"
+        val blobReference = BlobReference(blobId, DataType.PLAIN_TEXT, filename)
+        every { blobReferenceCollection.findOne(BlobReference::blobId eq blobId) } returns blobReference
+        every { storage.readAllBytes(capture(infoCapture)) } returns "someText".toByteArray()
+
+        val result = blobStore.getBlob(blobId)
+        result.fold(
+            {
+                fail("should not have thrown exception")
+            }, {
+                Assertions.assertEquals(blobReference, it.first)
+                Assertions.assertEquals("someText", String(it.second.readAllBytes()))
+            }
+        )
+
     }
 }
