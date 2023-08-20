@@ -20,8 +20,8 @@ import java.io.InputStream
 
 class GoogleBlobStoreTest {
 
-    val storage = mockk<Storage>()
-    val blobReferenceCollection = mockk<MongoCollection<BlobReference>>()
+    private val storage = mockk<Storage>()
+    private val blobReferenceCollection = mockk<MongoCollection<BlobReference>>()
     val blobStore: BlobStore = GoogleBlobStore(storage, blobReferenceCollection, "someBucketName")
 
     @Test
