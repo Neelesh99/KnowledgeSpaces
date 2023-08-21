@@ -25,14 +25,15 @@ import java.time.Clock
 
 
 fun main() {
+    val config = Config.fromEnvironment(Environment.ENV)
     val client1 = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val original = chain.request()
             val originalUrl = original.url
             val newUrl = originalUrl.newBuilder()
-                .scheme("http")
-                .host("localhost")
-                .port(2323)
+                .scheme(config.llmServerScheme)
+                .host(config.llmServerHost)
+                .port(config.llmServerPort)
                 .build()
             val requestBuilder= original.newBuilder()
                 .url(newUrl)
@@ -41,7 +42,6 @@ fun main() {
         }
         .build()
     val client: HttpHandler = OkHttp(client1)
-    val config = Config.fromEnvironment(Environment.ENV)
     val mongoClient = KMongo.createClient("mongodb+srv://firehzb:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
     val db = mongoClient.getDatabase("myStuff")
     val userCollection = db.getCollection<User>("user")
