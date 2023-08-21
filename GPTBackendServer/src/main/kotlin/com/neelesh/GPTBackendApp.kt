@@ -10,8 +10,6 @@ import com.neelesh.llm.SpacesQueryRequestHandler
 import com.neelesh.persistence.KnowledgeFileHandler
 import com.neelesh.persistence.KnowledgeSpaceHandler
 import com.neelesh.routes.*
-import com.neelesh.security.InMemoryOAuthPersistence
-import com.neelesh.security.InsecureTokenChecker
 import com.neelesh.storage.BlobHandler
 import com.neelesh.user.User
 import com.neelesh.util.UUIDGenerator
@@ -40,15 +38,6 @@ import org.litote.kmongo.KMongo
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
-import java.time.Clock
-
-// Google OAuth Example
-// Browse to: http://localhost:9000/oauth - you'll be redirected to google for authentication
-
-// this is a test implementation of the OAuthPersistence interface, which should be
-// implemented by application developers
-val inMemoryOAuthPersistence = InMemoryOAuthPersistence(Clock.systemUTC(), InsecureTokenChecker)
-
 
 // pre-defined configuration exist for common OAuth providers
 
@@ -75,7 +64,7 @@ class AttachReferrerFilter(val authFilter: Filter) {
 
 fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, config: Config): HttpHandler {
 
-    val mongoClient = KMongo.createClient("mongodb+srv://firehzb:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
+    val mongoClient = KMongo.createClient("mongodb+srv://${config.mongoDBUsername}:${config.mongoDBPassword}@cluster0.pxqerb3.mongodb.net/?retryWrites=true&w=majority")
     val userCollection = mongoClient.getDatabase("myStuff").getCollection<User>("user")
 
     val oauthProvider = OAuthProvider.google(
@@ -120,7 +109,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
     )
 
     val corsPolicy = CorsPolicy(
-        originPolicy = OriginPolicy.AnyOf(config.crossOriginLocation ), // TODO Replace with the appropriate client origin(s)
+        originPolicy = OriginPolicy.AnyOf(config.crossOriginLocation), // TODO Replace with the appropriate client origin(s)
         headers = listOf("Content-Type", "Authorization"), // TODO Consider adding back Authorization
         methods = listOf(Method.GET, Method.POST /*, Method.PUT, Method.DELETE */) // TODO Double Check Completeness
     )
