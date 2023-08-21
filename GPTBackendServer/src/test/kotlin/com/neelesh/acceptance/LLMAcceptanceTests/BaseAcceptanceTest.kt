@@ -30,7 +30,13 @@ open class BaseAcceptanceTest {
     fun setupClient(stubLlmApp: StubLLMApp, port: Int): Http4kServer {
         val server = GPTUserApp(
             InsecureCookieBasedOAuthPersistence("someThing"),
-            Dependencies(stubLlmApp.server(), blobStore, inMemoryKnowledgeFileStore, inMemoryKnowledgeSpaceStore, InsecureCookieBasedOAuthPersistence("someCookie")),
+            Dependencies(
+                stubLlmApp.server(),
+                blobStore,
+                inMemoryKnowledgeFileStore,
+                inMemoryKnowledgeSpaceStore,
+                InsecureCookieBasedOAuthPersistence("someCookie")
+            ),
             Config.DEFAULT
         )
         return server.asServer(Undertow(port = port)).start()

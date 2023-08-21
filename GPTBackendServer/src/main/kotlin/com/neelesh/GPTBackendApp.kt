@@ -81,7 +81,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
     val oauthProvider = OAuthProvider.google(
         JavaHttpClient(),
         Credentials(config.googleClientId, config.googleClientSecret),
-        Uri.of("http://localhost:9000/oauth/callback"),
+        Uri.of(config.callbackLocation),
         oAuthPersistence,
         scopes = listOf("openid", "email", "profile")
     )
@@ -120,7 +120,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
     )
 
     val corsPolicy = CorsPolicy(
-        originPolicy = OriginPolicy.AnyOf("http://localhost:5173"), // TODO Replace with the appropriate client origin(s)
+        originPolicy = OriginPolicy.AnyOf(config.crossOriginLocation ), // TODO Replace with the appropriate client origin(s)
         headers = listOf("Content-Type", "Authorization"), // TODO Consider adding back Authorization
         methods = listOf(Method.GET, Method.POST /*, Method.PUT, Method.DELETE */) // TODO Double Check Completeness
     )
@@ -175,7 +175,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
                 val cookie = it.cookie("securityServerAuth")
                 val user = userCollection.findOne(User::cookieSwapString eq cookie!!.value)!!
                 Response(Status.OK)
-                    .header("Access-Control-Allow-Origin", "http://localhost:5173")
+                    .header("Access-Control-Allow-Origin", config.crossOriginLocation)
                     .header("Access-Control-Allow-Credentials", "true")
                     .header("Access-Control-Allow-Methods", "GET")
                     .body(user.toDtoJson().toString())

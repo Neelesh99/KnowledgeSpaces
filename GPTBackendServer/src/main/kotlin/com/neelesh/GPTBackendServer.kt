@@ -46,6 +46,7 @@ fun main() {
     val db = mongoClient.getDatabase("myStuff")
     val userCollection = db.getCollection<User>("user")
     val mongoOAuthPersistence = MongoBasedOAuthPersistence(userCollection, Clock.systemUTC(), InsecureTokenChecker)
+    //val storage = StorageOptions.newBuilder().setProjectId(config.googleProjectId).build().getService()
     val dependencies = Dependencies(
         client,
         InMemoryBlobStore(File("/Users/neeleshravichandran/IdeaProjects/customGPTSlackbot/storage")),
