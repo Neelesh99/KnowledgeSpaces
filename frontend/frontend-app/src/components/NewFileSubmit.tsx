@@ -3,6 +3,7 @@ import {Fragment, useContext, useState} from 'react'
 import {AuthenticationContext} from "../service/AuthenticationContext";
 import {SimpleKnowledgeFileCreationRequest} from "../model/StorageModel";
 import {sendCreateKnowledgeFile} from "../service/StoreService";
+import {EnvironmentContext} from "../service/EnvironmentContext";
 
 export interface SubmitNewFileProps {
     filename: string
@@ -11,7 +12,7 @@ export interface SubmitNewFileProps {
 export default function SubmitNewFile(props: SubmitNewFileProps) {
     const [isOpen, setIsOpen] = useState(false)
     const user = useContext(AuthenticationContext)
-
+    const environment = useContext(EnvironmentContext)
     function closeModal() {
         setIsOpen(false)
     }
@@ -21,7 +22,7 @@ export default function SubmitNewFile(props: SubmitNewFileProps) {
             knowledgeFileName: props.filename,
             email: user.email
         }
-        void sendCreateKnowledgeFile("http://localhost:9000", newFileRequest).then(r => console.log(r))
+        void sendCreateKnowledgeFile(environment.backendPrefix, newFileRequest).then(r => console.log(r))
         setIsOpen(true)
     }
 

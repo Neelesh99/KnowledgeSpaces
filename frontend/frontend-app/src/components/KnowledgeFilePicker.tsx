@@ -4,6 +4,7 @@ import {CheckIcon, ChevronUpDownIcon} from '@heroicons/react/20/solid'
 import {KnowledgeFile, SimpleFilesRequest} from "../model/KnowledgeFile";
 import {AuthenticationContext} from "../service/AuthenticationContext";
 import {getFilesForEmail} from "../service/FilesService";
+import {EnvironmentContext} from "../service/EnvironmentContext";
 
 const defaultFiles: KnowledgeFile[] = [
     { id: "1", fileName: 'Default' },
@@ -24,10 +25,11 @@ export default function KnowledgeFilePicker(props: KnowledgeFilePickerProps) {
     const [query, setQuery] = useState('')
 
     const user = useContext(AuthenticationContext)
+    const environment = useContext(EnvironmentContext)
     useEffect(() => {
         const email = user.email
         const simpleFilesRequest: SimpleFilesRequest = {email: email}
-        const prefix = "http://localhost:9000"
+        const prefix = environment.backendPrefix
         void getFilesForEmail(prefix, simpleFilesRequest).then((files) => {
             console.log(files)
             setFiles(files)

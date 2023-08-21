@@ -4,6 +4,7 @@ import {convertSimpleUploadRequestToForData, convertTextToBlob, sendUploadForm} 
 import {SimpleBlobUploadRequest} from "../model/StorageModel";
 import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext";
 import {AuthenticationContext} from "../service/AuthenticationContext";
+import {EnvironmentContext} from "../service/EnvironmentContext";
 
 export interface StoreTypeProps {
     text: string
@@ -13,6 +14,7 @@ export default function StoreType(props: StoreTypeProps) {
     const [isOpen, setIsOpen] = useState(false)
     const targetFile = useContext(ChosenKnowledgeFileContext)
     const user = useContext(AuthenticationContext)
+    const environment = useContext(EnvironmentContext)
     function closeModal() {
         setIsOpen(false)
     }
@@ -27,7 +29,7 @@ export default function StoreType(props: StoreTypeProps) {
             email: user.email
         }
         const formData = convertSimpleUploadRequestToForData(simpleUploadRequest)
-        void sendUploadForm("http://localhost:9000", formData).then(r => console.log(r))
+        void sendUploadForm(environment.backendPrefix, formData).then(r => console.log(r))
         setIsOpen(true)
     }
 

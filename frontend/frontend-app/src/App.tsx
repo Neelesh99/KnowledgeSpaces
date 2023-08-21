@@ -10,10 +10,15 @@ import Home from "./routes/Home";
 import ErrorPage from "./routes/ErrorPage";
 import Store from "./routes/Store";
 import Query from "./routes/Query";
+import {EnvironmentContext} from "./service/EnvironmentContext";
+import {Environment} from "./model/EnvironmentModel";
 
 function App() {
     const [user, setUser] = useState<User>({username: "default", email: "default", valid: false})
-    const prefix = "http://localhost:9000";
+    const environment: Environment = {
+        backendPrefix: import.meta.env.VITE_BACKEND_PREFIX as string
+    }
+    const prefix = environment.backendPrefix;
 
     function login() {
         void getUser(prefix, setUser).then(
@@ -74,7 +79,9 @@ function App() {
   return (
       <AuthenticationContext.Provider value={user}>
           <>
-              <RouterProvider router={router} />
+              <EnvironmentContext.Provider value={environment}>
+                <RouterProvider router={router} />
+              </EnvironmentContext.Provider>
           </>
       </AuthenticationContext.Provider>
   )

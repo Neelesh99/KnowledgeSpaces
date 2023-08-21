@@ -4,6 +4,7 @@ import {QueryContext} from "../service/QueryContext";
 import {sendQueryRequest} from "../service/QueryService";
 import {AuthenticationContext} from "../service/AuthenticationContext";
 import {SimpleQueryRequest} from "../model/QueryModel";
+import {EnvironmentContext} from "../service/EnvironmentContext";
 
 
 export interface SubmitQueryProps {
@@ -14,6 +15,7 @@ export default function SubmitQuery(props: SubmitQueryProps) {
     const [isOpen, setIsOpen] = useState(false)
     const query = useContext(QueryContext)
     const user = useContext(AuthenticationContext)
+    const environment = useContext(EnvironmentContext)
 
     function closeModal() {
         setIsOpen(false)
@@ -25,7 +27,7 @@ export default function SubmitQuery(props: SubmitQueryProps) {
             knowledgeFileTarget: query.knowledgeFileTarget.id,
             query: query.queryString
         }
-        void sendQueryRequest("http://localhost:9000", queryRequest).then( (data) => {
+        void sendQueryRequest(environment.backendPrefix, queryRequest).then( (data) => {
                 console.log(data);
                 props.setResponse(data)
         });
