@@ -9,7 +9,7 @@ jobs:
     working_directory: ~/frontend/frontend-app
     steps:
       - checkout:
-          path: ~/frontend/frontend-app
+          path: ~/frontend
       - node/install-packages:
           pkg-manager: npm
       - run:
