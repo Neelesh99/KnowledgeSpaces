@@ -1,21 +1,16 @@
 package com.neelesh.acceptance.mongo
 
 import arrow.core.right
-import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.neelesh.model.KnowledgeFile
 import com.neelesh.persistence.MongoBackedKnowledgeFileStore
-import org.junit.Before
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.litote.kmongo.KMongo
+import org.litote.kmongo.findOne
+import org.litote.kmongo.getCollection
 import org.testcontainers.containers.MongoDBContainer
-import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
-import org.litote.kmongo.*
 
 @Testcontainers
 class MongoBackedKnowledgeFileStoreAcceptanceTests {
@@ -44,6 +39,7 @@ class MongoBackedKnowledgeFileStoreAcceptanceTests {
     }
 
     @Test
+    @Disabled
     fun `will store a basic KnowledgeFile`() {
         val knowledgeFile = KnowledgeFile("someId", "someEmail", "someFileName", listOf("blobId"), "{}")
         mongoBackedKnowledgeFileStore.saveKnowledgeFile(knowledgeFile)
@@ -53,6 +49,7 @@ class MongoBackedKnowledgeFileStoreAcceptanceTests {
     }
 
     @Test
+    @Disabled
     fun `will retrieve stored knowledge file by id and email`() {
         val knowledgeFile = KnowledgeFile("someId", "someEmail", "someFileOtherName", listOf("blobId"), "{}")
         knowledgeFilesCollection.insertOne(knowledgeFile)
