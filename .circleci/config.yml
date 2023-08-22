@@ -6,16 +6,20 @@ orbs:
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
-    working_directory: ~/project/frontend/frontend-app
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
+          app-dir: ~/project/frontend/frontend-app
       - run:
-          command: npm run test
+          command: |
+            cd frontend/frontend-app
+            npm run test
           name: Run tests
       - run:
-          command: npm run build
+          command: |
+            cd frontend/frontend-app
+            npm run build
           name: Build app
 workflows:
   kotlin-build-test:
