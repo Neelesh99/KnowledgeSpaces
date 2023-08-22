@@ -1,10 +1,29 @@
 version: '2.1'
 orbs:
   gradle: circleci/gradle@3.0.0
-  node: circleci/node@3.0.0
+  node: circleci/node@5.0.2
   python: circleci/python@3.0.0
+
+jobs:
+  node_build_test: # this can be any name you choose
+    executor: node/default # use the default executor defined within the orb
+    working_directory: ~/frontend/frontend-app
+    steps:
+      - checkout:
+          path: ~/frontend/frontend-app
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: npm run test
+          name: Run tests
+      - run:
+          command: npm run build
+          name: Build app
 workflows:
-  checkout-build-test:
+  kotlin-build-test:
     jobs:
       - gradle/test:
           app_src_directory: GPTBackendServer/
+  node-build-test:
+    jobs:
+
