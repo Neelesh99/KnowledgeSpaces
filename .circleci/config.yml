@@ -10,7 +10,7 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-          app-dir: /frontend/frontend-app
+          app-dir: ~/project/frontend/frontend-app
       - run:
           command: npm run test
           name: Run tests
