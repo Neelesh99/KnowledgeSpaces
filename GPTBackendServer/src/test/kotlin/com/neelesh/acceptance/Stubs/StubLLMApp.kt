@@ -27,7 +27,7 @@ class StubLLMApp(
         "/ping" bind Method.GET to {
             Response(Status.OK).body("pong")
         },
-        "http://localhost:2323/api/v1/llm/index" bind Method.POST to {
+        "api/v1/llm/index" bind Method.POST to {
 
             val formBody = MultipartFormBody.from(it)
             val indexFileName = formBody.field("indexRequestFileName")!!.value
@@ -37,7 +37,7 @@ class StubLLMApp(
             val response = responsesForIndexRequests.find { targetFileId -> targetFileId.first == indexRequest.knowledgeFileTarget }
             response?.second ?: defaultResponseForIndexRequest
         },
-        "http://localhost:2323/api/v1/llm/knowledgeFile/query" bind Method.POST to {
+        "api/v1/llm/knowledgeFile/query" bind Method.POST to {
             val formBody = MultipartFormBody.from(it)
             val knowledgeFileJson = formBody.file("knowledgeFile.json")
             val knowledgeFile = KnowledgeFile.fromJson(Jackson.parse(String(knowledgeFileJson!!.content.readAllBytes())))
@@ -46,7 +46,7 @@ class StubLLMApp(
             val response = responsesForQueryRequests.find { targetFileId -> targetFileId.first == knowledgeFile.id }
             response?.second ?: Response(Status.OK).body(request)
         },
-        "http://localhost:2323/api/v1/llm/knowledgeSpace/query" bind Method.POST to { queryRequest ->
+        "api/v1/llm/knowledgeSpace/query" bind Method.POST to { queryRequest ->
             val formBody = MultipartFormBody.from(queryRequest)
             val knowledgeSpaceJson = formBody.file("knowledgeSpace.json")
             val knowledgeSpace = KnowledgeSpace.fromJson(Jackson.parse(String(knowledgeSpaceJson!!.content.readAllBytes())))
