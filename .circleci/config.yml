@@ -3,6 +3,6 @@ orbs:
   gradle: circleci/gradle@3.0.0
 workflows:
   checkout-build-test:
-    working_directory: ~/GPTBackendServer
     jobs:
-      - gradle/test
+      - gradle/test:
+          app_src_directory: GPTBackendServer/
