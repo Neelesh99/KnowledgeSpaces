@@ -8,7 +8,7 @@ jobs:
     executor: node/default # use the default executor defined within the orb
     steps:
       - checkout:
-          - ~/project/frontend/frontend-app
+          path: ~/project/frontend/frontend-app
       - node/install-packages:
           pkg-manager: npm
           app-dir: ~/project/frontend/frontend-app
