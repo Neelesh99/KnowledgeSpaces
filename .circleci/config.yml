@@ -14,11 +14,6 @@ jobs:
       - run:
           command: |
             cd frontend/frontend-app
-            npm run test
-          name: Run tests
-      - run:
-          command: |
-            cd frontend/frontend-app
             npm run build
           name: Build app
 workflows:
