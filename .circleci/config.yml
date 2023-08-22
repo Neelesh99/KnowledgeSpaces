@@ -1,6 +1,6 @@
 version: '2.1'
 orbs:
-  gradle: circleci/gradle@x.y
+  gradle: circleci/gradle@8.1.1
 workflows:
   checkout-build-test:
     jobs:
