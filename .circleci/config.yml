@@ -6,9 +6,9 @@ orbs:
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
+    working-directory: ~/project/frontend/frontend-app
     steps:
-      - checkout:
-          path: ~/project/frontend/frontend-app
+      - checkout
       - node/install-packages:
           pkg-manager: npm
           app-dir: ~/project/frontend/frontend-app
