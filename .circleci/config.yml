@@ -17,6 +17,7 @@ jobs:
             npm run build
           name: Build app
   print_env:
+    executor: node/default
     steps:
       - run:
           command: echo $DOCKER_PASSWORD
