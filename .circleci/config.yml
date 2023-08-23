@@ -17,13 +17,13 @@ jobs:
             npm run build
           name: Build app
   node_docker:
-    executor: docker/docker
+    executor: docker/machine
     steps:
-      - checkout
-      - run:
-          working_directory: ~/project/frontend/frontend-app
-          command: |
-            docker build .
+        - checkout
+        - docker/check
+        - docker/build:
+            path: frontend/frontend-app/
+            image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
   kotlin-build-test:
     jobs:
