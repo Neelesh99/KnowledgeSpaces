@@ -16,6 +16,10 @@ jobs:
             cd frontend/frontend-app
             npm run build
           name: Build app
+  print_env:
+    steps:
+      - run:
+          command: echo $DOCKER_PASSWORD
 workflows:
   kotlin-build-test:
     jobs:
@@ -24,8 +28,7 @@ workflows:
       - gradle/run:
           app_src_directory: GPTBackendServer/
           command: jib
-          context:
-            - Docker
+
   node-build-test:
     jobs:
       - node_build_test
