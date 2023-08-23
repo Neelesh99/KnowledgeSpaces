@@ -16,6 +16,16 @@ jobs:
             cd frontend/frontend-app
             npm run build
           name: Build app
+  hard_gradle_jib:
+    executor: gradle/default
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo $DOCKER_PASSWORD
+            ./gradlew jib
+          name: Run Task
+          working_directory: GPTBackendServer/
   print_env:
     executor: node/default
     steps:
