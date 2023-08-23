@@ -36,8 +36,7 @@ workflows:
       - docker/publish:
 #            path: frontend/frontend-app/
             before_build:
-              steps:
-                - run:
-                    command: cd frontend/frontend-app
+              - run:
+                  command: cd frontend/frontend-app
             image: neeleshrav/knowledgespacesui
 
