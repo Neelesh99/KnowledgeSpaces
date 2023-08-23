@@ -15,8 +15,15 @@ jobs:
           command: |
             cd frontend/frontend-app
             npm run build
-            docker build .
           name: Build app
+  node_docker:
+    executor: docker/default
+    steps:
+      - checkout
+      - run:
+          working_directory: ~/project/frontend/frontend-app
+          command: |
+            docker build .
 workflows:
   kotlin-build-test:
     jobs:
@@ -28,4 +35,5 @@ workflows:
   node-build-test:
     jobs:
       - node_build_test
+      - node_docker
 
