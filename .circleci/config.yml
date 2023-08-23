@@ -34,6 +34,10 @@ workflows:
       - node_build_test
       - node_docker
       - docker/publish:
-            path: frontend/frontend-app/
+#            path: frontend/frontend-app/
+            before_build:
+              steps:
+                - run:
+                    command: cd frontend/frontend-app
             image: neeleshrav/knowledgespacesui
 
