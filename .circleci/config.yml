@@ -2,7 +2,7 @@ version: '2.1'
 orbs:
   gradle: circleci/gradle@3.0.0
   node: circleci/node@5.0.2
-
+  docker: circleci/docker@2.2.0
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
@@ -15,22 +15,8 @@ jobs:
           command: |
             cd frontend/frontend-app
             npm run build
+            docker build .
           name: Build app
-  hard_gradle_jib:
-    executor: gradle/default
-    steps:
-      - checkout
-      - run:
-          command: |
-            echo $DOCKER_PASSWORD
-            ./gradlew jib
-          name: Run Task
-          working_directory: GPTBackendServer/
-  print_env:
-    executor: node/default
-    steps:
-      - run:
-          command: echo $DOCKER_PASSWORD
 workflows:
   kotlin-build-test:
     jobs:
@@ -39,8 +25,6 @@ workflows:
       - gradle/run:
           app_src_directory: GPTBackendServer/
           command: jib
-      - hard_gradle_jib
-
   node-build-test:
     jobs:
       - node_build_test
