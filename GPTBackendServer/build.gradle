@@ -15,7 +15,7 @@ plugins {
 
 jib {
     container.mainClass = "com.neelesh.GPTBackendServerKt"
-    to.image = "neeleshrav/knowledgespacedev"
+    to.image = "neeleshrav/knowledgespacesdev:latest"
     to.auth.username = "neeleshrav"
     to.auth.password = "$System.env.DOCKER_PASSWORD"
 }
