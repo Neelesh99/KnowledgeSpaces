@@ -1,6 +1,6 @@
 FROM node:18-bullseye
 WORKDIR /app
-COPY . .
+COPY frontend/frontend-app .
 RUN ls
 RUN npm install
 EXPOSE 5173:5173
