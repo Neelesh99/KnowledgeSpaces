@@ -23,7 +23,7 @@ jobs:
         - docker/check
         - docker/build:
             path: frontend/frontend-app/
-            image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+            image: neeleshrav/knowledgespacesui
 workflows:
   kotlin-build-test:
     jobs:
