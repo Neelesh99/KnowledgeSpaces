@@ -17,7 +17,7 @@ jobs:
             npm run build
           name: Build app
   node_docker:
-    executor: docker/default
+    executor: docker/docker
     steps:
       - checkout
       - run:
