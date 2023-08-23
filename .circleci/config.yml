@@ -39,7 +39,7 @@ workflows:
       - gradle/run:
           app_src_directory: GPTBackendServer/
           command: jib
-      - print_env
+      - hard_gradle_jib
 
   node-build-test:
     jobs:
