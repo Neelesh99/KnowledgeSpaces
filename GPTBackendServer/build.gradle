@@ -15,7 +15,9 @@ plugins {
 
 jib {
     container.mainClass = "com.neelesh.GPTBackendServerKt"
-    to.image = "docker_repo_user/docker_image_user"
+    to.image = "neeleshrav/knowledgespacedev"
+    to.auth.username = "neeleshrav"
+    to.auth.password = "$System.env.DOCKER_PASSWORD"
 }
 
 repositories {

@@ -21,6 +21,11 @@ workflows:
     jobs:
       - gradle/test:
           app_src_directory: GPTBackendServer/
+      - gradle/run:
+          app_src_directory: GPTBackendServer/
+          command: jib
+          context:
+            - Docker
   node-build-test:
     jobs:
       - node_build_test
