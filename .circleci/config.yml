@@ -21,9 +21,6 @@ jobs:
     steps:
         - checkout
         - docker/check
-        - docker/publish:
-            path: frontend/frontend-app/
-            image: neeleshrav/knowledgespacesui
 workflows:
   kotlin-build-test:
     jobs:
@@ -36,4 +33,7 @@ workflows:
     jobs:
       - node_build_test
       - node_docker
+      - docker/publish:
+            path: frontend/frontend-app/
+            image: neeleshrav/knowledgespacesui
 
