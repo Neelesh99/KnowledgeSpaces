@@ -21,7 +21,7 @@ jobs:
     steps:
         - checkout
         - docker/check
-        - docker/build:
+        - docker/publish:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
 workflows:
