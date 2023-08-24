@@ -36,4 +36,9 @@ workflows:
       - docker/publish:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
+  python-publish:
+    jobs:
+      - docker/publish:
+          path: LLMServer/
+          image: neeleshrav/knowledgespacesllm
 
