@@ -1,4 +1,4 @@
-FROM python
+FROM python:bullseye
 WORKDIR /app
 COPY LLMServer .
 RUN ls
