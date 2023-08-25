@@ -3,7 +3,7 @@ WORKDIR /app
 COPY frontend/frontend-app .
 RUN ls
 RUN npm install
-EXPOSE 8080:8080
+EXPOSE 5173:5173
 RUN npm run build
 RUN npm install -g serve
-ENTRYPOINT ["serve", "-s", "dist", "-l", "8080"]
+ENTRYPOINT ["serve", "-s", "dist", "-l", "5173"]
