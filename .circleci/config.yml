@@ -23,23 +23,24 @@ jobs:
     steps:
         - checkout
         - docker/check
-  use-gcp:
-    executor: gcp-cli/default
-    steps:
-      - gcp-cli/setup
   deploy:
     description: Deploy application to Google Kubernetes Engine
     executor: gcp-cli/default
     steps:
+      - checkout
       - gcp-cli/setup:
           components: kubectl
-      - gcp-gke/create-cluster:
-          cluster: gcp-testing
-          autopilot: true
-      - gcp-gke/rollout-image:
-          deployment: gcp-testing
-          container: dominic-backend
-          image: neeleshrav/knowledgespacesui:latest
+      - run:
+          command: |
+            gcloud container clusters create ui-cluster
+            gcloud container clusters list
+            gcloud container clusters get-credentials circle-ci-cluster
+            kubectl config current-context
+            cd frontent/frontend-app
+            kubectl apply --validate=true --dry-run=true -f admin/
+            kubectl apply --validate=true -f admin/
+            sleep 30
+            kubectl get services
 workflows:
   kotlin-build-test:
     jobs:
