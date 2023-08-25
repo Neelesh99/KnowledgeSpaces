@@ -49,7 +49,6 @@ jobs:
           components: kubectl
       - run:
           command: |
-            gcloud container clusters create llm-cluster --disk-type pd-standard
             gcloud container clusters list
             gcloud container clusters get-credentials llm-cluster
             kubectl config current-context
