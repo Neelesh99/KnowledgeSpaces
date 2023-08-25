@@ -26,11 +26,6 @@ jobs:
     description: Deploy application to Google Kubernetes Engine
     machine: true
     steps:
-      # Install `gcloud` and `kubectl` if not already installed.
-      - gcp-gke/install
-      # Initialize the `gcloud` CLI.
-      - gcp-gke/init
-      # Update a deployment Docker image.
       - gcp-gke/rollout-image:
           deployment: circle-ci-cluster
           container: dominic-backend
