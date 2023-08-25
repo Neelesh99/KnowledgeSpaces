@@ -32,11 +32,10 @@ jobs:
           components: kubectl
       - run:
           command: |
-            gcloud container clusters create ui-cluster --disk-type pd-standard
             gcloud container clusters list
             gcloud container clusters get-credentials ui-cluster
             kubectl config current-context
-            cd frontent/frontend-app
+            cd frontend/frontend-app
             kubectl apply --validate=true --dry-run=true -f admin/
             kubectl apply --validate=true -f admin/
             sleep 30
