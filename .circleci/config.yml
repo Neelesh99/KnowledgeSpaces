@@ -3,6 +3,7 @@ orbs:
   gradle: circleci/gradle@3.0.0
   node: circleci/node@5.0.2
   docker: circleci/docker@2.2.0
+  gcr: circleci/gcp-gcr@0.0.2
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
@@ -21,6 +22,19 @@ jobs:
     steps:
         - checkout
         - docker/check
+  deploy:
+    description: Deploy application to Google Kubernetes Engine
+    machine: true
+    steps:
+      # Install `gcloud` and `kubectl` if not already installed.
+      - gcp-gke/install
+      # Initialize the `gcloud` CLI.
+      - gcp-gke/init
+      # Update a deployment Docker image.
+      - gcp-gke/rollout-image:
+          deployment: circle-ci-cluster
+          container: dominic-backend
+          image: neeleshrav/knowledgespacesui:latest
 workflows:
   kotlin-build-test:
     jobs:
@@ -37,6 +51,9 @@ workflows:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
             tag: latest
+      - deploy:
+            requires:
+              - docker/publish
   python-publish:
     jobs:
       - docker/publish:
