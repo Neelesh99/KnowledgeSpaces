@@ -4,6 +4,7 @@ orbs:
   node: circleci/node@5.0.2
   docker: circleci/docker@2.2.0
   gcp-gke: circleci/gcp-gke@2.2.0
+  gcp-cli: circleci/gcp-cli@3.1.1
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
