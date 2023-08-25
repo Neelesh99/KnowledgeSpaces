@@ -22,10 +22,17 @@ jobs:
     steps:
         - checkout
         - docker/check
+  use-gcp:
+    executor: gcp-cli/default
+    steps:
+      - gcp-cli/setup
   deploy:
     description: Deploy application to Google Kubernetes Engine
     machine: true
+    executor: gcp-cli/default
     steps:
+      - gcp-cli/setup:
+          components: kubectl
       - gcp-gke/rollout-image:
           deployment: circle-ci-cluster
           container: dominic-backend
