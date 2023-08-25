@@ -34,7 +34,7 @@ jobs:
           command: |
             gcloud container clusters create ui-cluster
             gcloud container clusters list
-            gcloud container clusters get-credentials circle-ci-cluster
+            gcloud container clusters get-credentials ui-cluster
             kubectl config current-context
             cd frontent/frontend-app
             kubectl apply --validate=true --dry-run=true -f admin/
