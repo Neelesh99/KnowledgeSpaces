@@ -33,7 +33,7 @@ jobs:
     steps:
       - gcp-cli/setup:
           components: kubectl
-      - gke/create-cluster:
+      - gcp-gke/create-cluster:
           cluster: gcp-testing
       - gcp-gke/rollout-image:
           deployment: gcp-testing
