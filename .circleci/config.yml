@@ -33,8 +33,10 @@ jobs:
     steps:
       - gcp-cli/setup:
           components: kubectl
+      - gke/create-cluster:
+          cluster: gcp-testing
       - gcp-gke/rollout-image:
-          deployment: circle-ci-cluster
+          deployment: gcp-testing
           container: dominic-backend
           image: neeleshrav/knowledgespacesui:latest
 workflows:
