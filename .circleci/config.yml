@@ -29,7 +29,6 @@ jobs:
       - gcp-cli/setup
   deploy:
     description: Deploy application to Google Kubernetes Engine
-    machine: true
     executor: gcp-cli/default
     steps:
       - gcp-cli/setup:
