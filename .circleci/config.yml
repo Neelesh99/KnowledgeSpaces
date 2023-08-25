@@ -3,7 +3,7 @@ orbs:
   gradle: circleci/gradle@3.0.0
   node: circleci/node@5.0.2
   docker: circleci/docker@2.2.0
-  gcp-gke: circleci/gcp-gke@0.1.0
+  gcp-gke: circleci/gcp-gke@2.2.0
 jobs:
   node_build_test: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
