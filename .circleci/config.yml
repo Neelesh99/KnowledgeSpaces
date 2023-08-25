@@ -23,7 +23,7 @@ jobs:
     steps:
         - checkout
         - docker/check
-  deploy:
+  deploy-ui:
     description: Deploy application to Google Kubernetes Engine
     executor: gcp-cli/default
     steps:
@@ -36,6 +36,24 @@ jobs:
             gcloud container clusters get-credentials ui-cluster
             kubectl config current-context
             cd frontend/frontend-app
+            kubectl apply --validate=true --dry-run=true -f admin/
+            kubectl apply --validate=true -f admin/
+            sleep 30
+            kubectl get services
+  deploy-llm:
+    description: Deploy application to Google Kubernetes Engine
+    executor: gcp-cli/default
+    steps:
+      - checkout
+      - gcp-cli/setup:
+          components: kubectl
+      - run:
+          command: |
+            gcloud container clusters create llm-cluster --disk-type pd-standard
+            gcloud container clusters list
+            gcloud container clusters get-credentials llm-cluster
+            kubectl config current-context
+            cd LLMServer
             kubectl apply --validate=true --dry-run=true -f admin/
             kubectl apply --validate=true -f admin/
             sleep 30
@@ -56,7 +74,7 @@ workflows:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
             tag: latest
-      - deploy:
+      - deploy-ui:
             requires:
               - docker/publish
   python-publish:
