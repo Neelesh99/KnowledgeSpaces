@@ -35,10 +35,12 @@ workflows:
       - node_docker
       - docker/publish:
             path: frontend/frontend-app/
-            image: neeleshrav/knowledgespacesui:latest
+            image: neeleshrav/knowledgespacesui
+            tag: latest
   python-publish:
     jobs:
       - docker/publish:
           path: LLMServer/
-          image: neeleshrav/knowledgespacesllm:latest
+          image: neeleshrav/knowledgespacesllm
+          tag: latest
 
