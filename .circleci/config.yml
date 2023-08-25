@@ -35,7 +35,7 @@ jobs:
           components: kubectl
       - gcp-gke/rollout-image:
           deployment: circle-ci-cluster
-          container: rusty-pangolin
+          container: dominic-backend
           image: neeleshrav/knowledgespacesui:latest
 workflows:
   kotlin-build-test:
