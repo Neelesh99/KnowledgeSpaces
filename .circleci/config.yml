@@ -83,4 +83,7 @@ workflows:
           path: LLMServer/
           image: neeleshrav/knowledgespacesllm
           tag: latest
+      - deploy-llm:
+          requires:
+            - docker/publish
 
