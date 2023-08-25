@@ -32,7 +32,7 @@ jobs:
           components: kubectl
       - run:
           command: |
-            gcloud container clusters create ui-cluster
+            gcloud container clusters create ui-cluster --disk-type pd-standard
             gcloud container clusters list
             gcloud container clusters get-credentials ui-cluster
             kubectl config current-context
