@@ -36,7 +36,6 @@ jobs:
       - gcp-gke/create-cluster:
           cluster: gcp-testing
           autopilot: true
-          additional_args: --disk-size=100.0
       - gcp-gke/rollout-image:
           deployment: gcp-testing
           container: dominic-backend
