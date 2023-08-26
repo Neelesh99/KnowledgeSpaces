@@ -65,6 +65,7 @@ jobs:
       - checkout
       - gcp-cli/setup:
           components: kubectl
+          google_compute_zone: GOOGLE_COMPUTE_ZONE_2
       - run:
           command: |
             gcloud container clusters list
