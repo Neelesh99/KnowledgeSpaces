@@ -57,6 +57,24 @@ jobs:
             kubectl apply --validate=true -f admin/
             sleep 30
             kubectl get services
+
+  deploy-backend:
+    description: Deploy application to Google Kubernetes Engine
+    executor: gcp-cli/default
+    steps:
+      - checkout
+      - gcp-cli/setup:
+          components: kubectl
+      - run:
+          command: |
+            gcloud container clusters list
+            gcloud container clusters get-credentials llm-cluster
+            kubectl config current-context
+            cd LLMServer
+            kubectl apply --validate=true --dry-run=true -f admin/
+            kubectl apply --validate=true -f admin/
+            sleep 30
+            kubectl get services
 workflows:
   kotlin-build-test:
     jobs:
@@ -65,6 +83,9 @@ workflows:
       - gradle/run:
           app_src_directory: GPTBackendServer/
           command: jib
+      - deploy-backend:
+          requires:
+            - gradle/run
   node-build-test:
     jobs:
       - node_build_test
