@@ -67,7 +67,6 @@ jobs:
           components: kubectl
       - run:
           command: |
-            gcloud container clusters create backend-cluster --disk-type pd-standard --max-nodes 2
             gcloud container clusters list
             gcloud container clusters get-credentials backend-cluster
             kubectl config current-context
