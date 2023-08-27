@@ -37,7 +37,7 @@ jobs:
             kubectl config current-context
             cd frontend/frontend-app
             kubectl apply --validate=true --dry-run=true -f admin/
-            kubectl apply --validate=true -f admin/
+            kubectl replace --validate=true -f admin/ --force
             sleep 30
             kubectl get services
   deploy-llm:
