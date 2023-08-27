@@ -95,7 +95,7 @@ workflows:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
             tag: latest
-            extra-build-args: --build-arg VITE_BACKEND_PREFIX=$VITE_BACKEND_PREFIX
+            extra_build_args: --build-arg VITE_BACKEND_PREFIX=$VITE_BACKEND_PREFIX
       - deploy-ui:
             requires:
               - docker/publish
@@ -105,7 +105,7 @@ workflows:
           path: LLMServer/
           image: neeleshrav/knowledgespacesllm
           tag: latest
-          extra-build-args: --build-arg DB_NAME=$DB_NAME --build-arg MONGO_CONNECTION_STRING_TEMPLATE=$MONGO_CONNECTION_STRING_TEMPLATE --build-arg MONGO_DB_PASSWORD=$MONGO_DB_PASSWORD --build-arg MONGO_DB_USERNAME=$MONGO_DB_USERNAME
+          extra_build_args: --build-arg DB_NAME=$DB_NAME --build-arg MONGO_CONNECTION_STRING_TEMPLATE=$MONGO_CONNECTION_STRING_TEMPLATE --build-arg MONGO_DB_PASSWORD=$MONGO_DB_PASSWORD --build-arg MONGO_DB_USERNAME=$MONGO_DB_USERNAME
       - deploy-llm:
           requires:
             - docker/publish
