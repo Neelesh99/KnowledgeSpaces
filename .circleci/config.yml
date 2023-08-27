@@ -95,6 +95,7 @@ workflows:
             path: frontend/frontend-app/
             image: neeleshrav/knowledgespacesui
             tag: latest
+            extra-build-args: --build-arg VITE_BACKEND_PREFIX=$VITE_BACKEND_PREFIX
       - deploy-ui:
             requires:
               - docker/publish
