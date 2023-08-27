@@ -54,7 +54,7 @@ jobs:
             kubectl config current-context
             cd LLMServer
             kubectl apply --validate=true --dry-run=true -f admin/
-            kubectl apply --validate=true -f admin/
+            kubectl replace --validate=true -f admin/ --force
             sleep 30
             kubectl get services
 
@@ -73,7 +73,7 @@ jobs:
             kubectl config current-context
             cd GPTBackendServer
             kubectl apply --validate=true --dry-run=true -f admin/
-            kubectl apply --validate=true -f admin/
+            kubectl replace --validate=true -f admin/ --force
             sleep 30
             kubectl get services
 workflows:
