@@ -19,16 +19,16 @@ jib {
     to.auth.username = "neeleshrav"
     to.auth.password = "$System.env.DOCKER_PASSWORD"
     container.environment = Map.of(
-            "GOOGLE_CLIENT_ID", "$System.env.GOOGLE_CLIENT_ID",
-            "GOOGLE_CLIENT_SECRET", "$System.env.GOOGLE_CLIENT_SECRET",
-            "MONGO_DB_PASSWORD", "$System.env.MONGO_DB_PASSWORD",
-            "MONGO_DB_USERNAME", "$System.env.MONGO_DB_USERNAME",
-            "GOOGLE_PROJECT_ID", "$System.env.GOOGLE_PROJECT_ID",
-            "CALLBACK_LOCATION", "$System.env.CALLBACK_LOCATION",
-            "CROSS_ORIGIN_LOCATION", "$System.env.CROSS_ORIGIN_LOCATION",
-            "LLM_SERVER_SCHEME", "$System.env.LLM_SERVER_SCHEME",
-            "LLM_SERVER_HOST", "$System.env.LLM_SERVER_HOST",
-            "LLM_SERVER_PORT", "$System.env.LLM_SERVER_PORT")
+            "GOOGLE_CLIENT_ID", "$System.env.GOOGLE_CLIENT_ID".toString(),
+            "GOOGLE_CLIENT_SECRET", "$System.env.GOOGLE_CLIENT_SECRET".toString(),
+            "MONGO_DB_PASSWORD", "$System.env.MONGO_DB_PASSWORD".toString(),
+            "MONGO_DB_USERNAME", "$System.env.MONGO_DB_USERNAME".toString(),
+            "GOOGLE_PROJECT_ID", "$System.env.GOOGLE_PROJECT_ID".toString(),
+            "CALLBACK_LOCATION", "$System.env.CALLBACK_LOCATION".toString(),
+            "CROSS_ORIGIN_LOCATION", "$System.env.CROSS_ORIGIN_LOCATION".toString(),
+            "LLM_SERVER_SCHEME", "$System.env.LLM_SERVER_SCHEME".toString(),
+            "LLM_SERVER_HOST", "$System.env.LLM_SERVER_HOST".toString(),
+            "LLM_SERVER_PORT", "$System.env.LLM_SERVER_PORT".toString())
 }
 
 repositories {
