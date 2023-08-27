@@ -19,6 +19,7 @@ function App() {
         backendPrefix: import.meta.env.VITE_BACKEND_PREFIX as string
     }
     const prefix = environment.backendPrefix;
+    console.log(prefix)
 
     function login() {
         void getUser(prefix, setUser).then(
