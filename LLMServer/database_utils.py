@@ -23,8 +23,8 @@ class DatabaseConfig:
     @staticmethod
     def get_database_config_from_env():
         connection_string_template = os.getenv("MONGO_CONNECTION_STRING_TEMPLATE")
-        username = os.getenv("MONGO_USERNAME")
-        password = os.getenv("MONGO_PASSWORD")
+        username = os.getenv("MONGO_DB_USERNAME")
+        password = os.getenv("MONGO_DB_PASSWORD")
         db_name = os.getenv("DB_NAME")
         username_replaced = connection_string_template.replace("<username>", username)
         full_string = username_replaced.replace("<password>", password)
