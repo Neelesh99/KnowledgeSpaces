@@ -17,6 +17,7 @@ spec:
         app: ci-deploy
         tier: backend
     spec:
+      serviceAccountName: ksa-service-account
       containers:
         - image: neeleshrav/knowledgespacesdev:latest
           name: rusty-pangolin

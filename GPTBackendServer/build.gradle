@@ -18,17 +18,18 @@ jib {
     to.image = "neeleshrav/knowledgespacesdev:latest"
     to.auth.username = "neeleshrav"
     to.auth.password = "$System.env.DOCKER_PASSWORD"
-    container.environment = Map.of(
-            "GOOGLE_CLIENT_ID", "$System.env.GOOGLE_CLIENT_ID".toString(),
-            "GOOGLE_CLIENT_SECRET", "$System.env.GOOGLE_CLIENT_SECRET".toString(),
-            "MONGO_DB_PASSWORD", "$System.env.MONGO_DB_PASSWORD".toString(),
-            "MONGO_DB_USERNAME", "$System.env.MONGO_DB_USERNAME".toString(),
-            "GOOGLE_PROJECT_ID", "$System.env.GOOGLE_PROJECT_ID".toString(),
-            "CALLBACK_LOCATION", "$System.env.CALLBACK_LOCATION".toString(),
-            "CROSS_ORIGIN_LOCATION", "$System.env.CROSS_ORIGIN_LOCATION".toString(),
-            "LLM_SERVER_SCHEME", "$System.env.LLM_SERVER_SCHEME".toString(),
-            "LLM_SERVER_HOST", "$System.env.LLM_SERVER_HOST".toString(),
-            "LLM_SERVER_PORT", "$System.env.LLM_SERVER_PORT".toString())
+    container.environment = Map.ofEntries(
+            Map.entry("GOOGLE_CLIENT_ID", "$System.env.GOOGLE_CLIENT_ID".toString()),
+            Map.entry("GOOGLE_CLIENT_SECRET", "$System.env.GOOGLE_CLIENT_SECRET".toString()),
+            Map.entry("MONGO_DB_PASSWORD", "$System.env.MONGO_DB_PASSWORD".toString()),
+            Map.entry("MONGO_DB_USERNAME", "$System.env.MONGO_DB_USERNAME".toString()),
+            Map.entry("GOOGLE_PROJECT_ID", "$System.env.GOOGLE_PROJECT_ID".toString()),
+            Map.entry("CALLBACK_LOCATION", "$System.env.CALLBACK_LOCATION".toString()),
+            Map.entry("CROSS_ORIGIN_LOCATION", "$System.env.CROSS_ORIGIN_LOCATION".toString()),
+            Map.entry("LLM_SERVER_SCHEME", "$System.env.LLM_SERVER_SCHEME".toString()),
+            Map.entry("LLM_SERVER_HOST", "$System.env.LLM_SERVER_HOST".toString()),
+            Map.entry("LLM_SERVER_PORT", "$System.env.LLM_SERVER_PORT".toString()),
+            Map.entry("STORAGE_BUCKET", "$System.env.STORAGE_BUCKET".toString()))
 }
 
 repositories {

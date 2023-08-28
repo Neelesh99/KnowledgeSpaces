@@ -108,6 +108,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
         UUIDGenerator()
     )
 
+
     val corsPolicy = CorsPolicy(
         originPolicy = OriginPolicy.AnyOf(config.crossOriginLocation), // TODO Replace with the appropriate client origin(s)
         headers = listOf("Content-Type", "Authorization"), // TODO Consider adding back Authorization

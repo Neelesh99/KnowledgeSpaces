@@ -14,6 +14,7 @@ val crossOriginLocationLens = EnvironmentKey.defaulted("CROSS_ORIGIN_LOCATION", 
 val llmServerSchemeLens = EnvironmentKey.defaulted("LLM_SERVER_SCHEME", "http")
 val llmServerHostLens = EnvironmentKey.defaulted("LLM_SERVER_HOST", "localhost")
 val llmServerPortLens = EnvironmentKey.int().defaulted("LLM_SERVER_PORT", 2323)
+val storageBucketLens = EnvironmentKey.defaulted("STORAGE_BUCKET", "filesbucketknowledgespaces")
 
 data class Config(
     val googleClientId: String,
@@ -25,7 +26,8 @@ data class Config(
     val crossOriginLocation: String,
     val llmServerScheme: String,
     val llmServerHost: String,
-    val llmServerPort: Int
+    val llmServerPort: Int,
+    val storageBucket: String
 ) {
 
     companion object {
@@ -43,7 +45,8 @@ data class Config(
                 crossOriginLocationLens(environment),
                 llmServerSchemeLens(environment),
                 llmServerHostLens(environment),
-                llmServerPortLens(environment)
+                llmServerPortLens(environment),
+                storageBucketLens(environment)
             )
         }
     }

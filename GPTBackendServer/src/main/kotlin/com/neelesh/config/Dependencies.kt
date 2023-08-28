@@ -1,5 +1,6 @@
 package com.neelesh.config
 
+import com.google.cloud.storage.Storage
 import com.neelesh.persistence.KnowledgeFileStore
 import com.neelesh.persistence.KnowledgeSpaceStore
 import com.neelesh.storage.BlobStore
@@ -11,5 +12,6 @@ data class Dependencies(
     val blobStore: BlobStore,
     val knowledgeFileStore: KnowledgeFileStore,
     val knowledgeSpaceStore: KnowledgeSpaceStore,
-    val oAuthPersistence: OAuthPersistence
+    val oAuthPersistence: OAuthPersistence,
+    val storage: Storage
 )

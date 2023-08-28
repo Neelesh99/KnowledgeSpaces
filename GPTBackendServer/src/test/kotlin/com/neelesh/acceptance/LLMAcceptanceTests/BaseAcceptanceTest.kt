@@ -8,6 +8,7 @@ import com.neelesh.config.Config
 import com.neelesh.config.Dependencies
 import com.neelesh.storage.BlobStore
 import com.neelesh.storage.InMemoryBlobStore
+import io.mockk.mockk
 import okhttp3.OkHttpClient
 import org.http4k.client.OkHttp
 import org.http4k.core.HttpHandler
@@ -56,7 +57,8 @@ open class BaseAcceptanceTest {
                 blobStore,
                 inMemoryKnowledgeFileStore,
                 inMemoryKnowledgeSpaceStore,
-                InsecureCookieBasedOAuthPersistence("someCookie")
+                InsecureCookieBasedOAuthPersistence("someCookie"),
+                mockk()
             ),
             Config.DEFAULT
         )
