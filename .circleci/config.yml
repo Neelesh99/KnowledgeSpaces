@@ -75,8 +75,6 @@ jobs:
             gcloud container clusters get-credentials backend-cluster --region=europe-west1
             kubectl create namespace cloud-storage-namespace
             kubectl create serviceaccount ksa-service-account --namespace cloud-storage-namespace
-#            gcloud iam service-accounts create iam-service-account --project=knowledgespaces
-#            gcloud projects add-iam-policy-binding knowledgespaces --member "serviceAccount:iam-service-account@knowledgespaces.iam.gserviceaccount.com" --role "roles/storage.admin"
             gcloud iam service-accounts add-iam-policy-binding iam-service-account@knowledgespaces.iam.gserviceaccount.com --role roles/iam.workloadIdentityUser --member "serviceAccount:knowledgespaces.svc.id.goog[cloud-storage-namespace/ksa-service-account]"
             kubectl annotate serviceaccount ksa-service-account --namespace cloud-storage-namespace iam.gke.io/gcp-service-account=iam-service-account@knowledgespaces.iam.gserviceaccount.com
             kubectl apply --validate=true --dry-run=true -f admin/
