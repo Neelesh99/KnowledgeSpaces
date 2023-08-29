@@ -9,7 +9,7 @@ import com.neelesh.model.KnowledgeSpace
 import com.neelesh.persistence.MongoBackedKnowledgeFileStore
 import com.neelesh.persistence.MongoBackedKnowledgeSpaceStore
 import com.neelesh.security.InsecureTokenChecker
-import com.neelesh.storage.GoogleBlobStore
+import com.neelesh.storage.InMemoryBlobStore
 import com.neelesh.user.MongoBasedOAuthPersistence
 import com.neelesh.user.User
 import okhttp3.OkHttpClient
@@ -22,6 +22,7 @@ import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.getCollection
+import java.io.File
 import java.time.Clock
 
 
@@ -50,10 +51,10 @@ fun main() {
     //val storage = StorageOptions.newBuilder().setProjectId(config.googleProjectId).build().getService()
     val storage = StorageOptions.getDefaultInstance().getService()
     val blobCollection = db.getCollection<BlobReference>("blobInfo")
-    val googleBlobStore = GoogleBlobStore(storage, blobCollection, config.storageBucket)
+    //val googleBlobStore = GoogleBlobStore(storage, blobCollection, config.storageBucket)
     val dependencies = Dependencies(
         client,
-        googleBlobStore,
+        InMemoryBlobStore(File("/somePath")),
         MongoBackedKnowledgeFileStore(db.getCollection<KnowledgeFile>("knowledgeFileCollection")),
         MongoBackedKnowledgeSpaceStore(db.getCollection<KnowledgeSpace>("knowledgeSpaceCollection")),
         mongoOAuthPersistence,
