@@ -73,7 +73,6 @@ jobs:
             kubectl config current-context
             cd GPTBackendServer
             gcloud container clusters get-credentials backend-cluster --region=europe-west1
-            kubectl create namespace cloud-storage-namespace
             kubectl create serviceaccount ksa-service-account --namespace cloud-storage-namespace
             gcloud iam service-accounts add-iam-policy-binding iam-service-account@knowledgespaces.iam.gserviceaccount.com --role roles/iam.workloadIdentityUser --member "serviceAccount:knowledgespaces.svc.id.goog[cloud-storage-namespace/ksa-service-account]"
             kubectl annotate serviceaccount ksa-service-account --namespace cloud-storage-namespace iam.gke.io/gcp-service-account=iam-service-account@knowledgespaces.iam.gserviceaccount.com
