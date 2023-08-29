@@ -32,7 +32,6 @@ jib {
             Map.entry("STORAGE_BUCKET", "$System.env.STORAGE_BUCKET".toString()))
 }
 
-
 repositories {
     mavenCentral()
 }
