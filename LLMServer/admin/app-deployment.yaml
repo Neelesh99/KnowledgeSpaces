@@ -24,7 +24,7 @@ spec:
             requests:
               memory: "8Gi"
             limits:
-              memory: "16Gi"
+              memory: "10Gi"
           ports:
             - containerPort: 2323
               name: ci-deploy
