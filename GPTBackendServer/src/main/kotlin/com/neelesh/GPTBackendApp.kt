@@ -34,6 +34,7 @@ import org.http4k.routing.static
 import org.http4k.security.OAuthPersistence
 import org.http4k.security.OAuthProvider
 import org.http4k.security.google
+import org.jboss.logging.Logger
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
@@ -51,8 +52,12 @@ private fun routingHttpHandler(descriptionPath: String) = "docs" bind Method.GET
 private const val API_DESCRIPTION_PATH = "/contract/api/v1/swagger.json"
 
 class AttachReferrerFilter(val authFilter: Filter) {
+
+    val log = Logger.getLogger(AttachReferrerFilter::class.java)
+
     fun invoke(request: Request): Response {
         val requestLink = request.uri.query.split("=")[1]
+        log.debug(requestLink)
         val then = authFilter.then {
             Response(Status.TEMPORARY_REDIRECT)
                 .header("Location", requestLink)
@@ -114,6 +119,9 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
         headers = listOf("Content-Type", "Authorization"), // TODO Consider adding back Authorization
         methods = listOf(Method.GET, Method.POST /*, Method.PUT, Method.DELETE */) // TODO Double Check Completeness
     )
+
+    val log = Logger.getLogger("BackendApp")
+    log.debug(corsPolicy.originPolicy.toString())
 
     val corsMiddleware = ServerFilters.Cors(corsPolicy)
 
