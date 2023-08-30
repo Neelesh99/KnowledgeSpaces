@@ -20,6 +20,11 @@ spec:
       containers:
         - image: neeleshrav/knowledgespacesllm:latest
           name: rusty-pangolin
+          resources:
+            requests:
+              memory: "8Gi"
+            limits:
+              memory: "16Gi"
           ports:
             - containerPort: 2323
               name: ci-deploy
