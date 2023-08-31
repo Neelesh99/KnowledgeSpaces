@@ -47,7 +47,7 @@ function App() {
             path: "/",
             element: <div>
                 <NavigationBar {...{user: user, loginFunction: login}}/>
-                <Home/>
+                <Home {...{loginFunction: login}}/>
             </div>,
             errorElement: <div>
                 <NavigationBar {...{user: user, loginFunction: login}}/>

@@ -19,6 +19,7 @@ export function NavigationBar(props: NavigationBarProps) {
             <NavigationButton title="Home" link="/"/>
             <NavigationButton title="Store" link="/store"/>
             <NavigationButton title="Query" link="/query"/>
+            <NavigationButton title="Manage" link="/manage"/>
         </div>
         <LoginButton title={props.user.valid ? props.user.username : "Login"} loginFunction={props.loginFunction}/>
     </div>
