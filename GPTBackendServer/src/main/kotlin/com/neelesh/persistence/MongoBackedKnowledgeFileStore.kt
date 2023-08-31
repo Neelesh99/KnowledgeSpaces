@@ -29,6 +29,10 @@ class MongoBackedKnowledgeFileStore(private val knowledgeFileCollection: MongoCo
         return if(result.wasAcknowledged()) knowledgeFile.right() else Exception("Could not save knowledge file").left()
     }
 
+    override fun deleteKnowledgeFile(knowledgeFile: KnowledgeFile): Either<Exception, Boolean> {
+        return knowledgeFileCollection.deleteOne(KnowledgeFile::id eq knowledgeFile.id).wasAcknowledged().right()
+    }
+
     override fun listFilesForEmail(email: String): Either<Exception, List<KnowledgeFile>> {
         return knowledgeFileCollection.find(KnowledgeFile::email eq email).toList().right()
     }

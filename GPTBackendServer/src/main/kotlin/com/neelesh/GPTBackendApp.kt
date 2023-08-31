@@ -152,6 +152,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
             routes += DownloadBlobRoute(blobHandler)
             routes += CreateKnowledgeFileRoute(knowledgeFileHandler)
             routes += UpdateKnowledgeFileRoute(knowledgeFileHandler)
+            routes += DeleteKnowledgeFileRoute(knowledgeFileHandler)
             routes += CreateKnowledgeSpaceRoute(knowledgeSpaceHandler)
             routes += UpdateKnowledgeSpaceRoute(knowledgeSpaceHandler)
             routes += GetFilesRoute(knowledgeFileHandler)

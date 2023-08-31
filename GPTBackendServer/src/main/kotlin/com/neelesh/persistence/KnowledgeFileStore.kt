@@ -9,6 +9,8 @@ interface KnowledgeFileStore {
 
     fun saveKnowledgeFile(knowledgeFile: KnowledgeFile) : Either<Exception, KnowledgeFile>
 
+    fun deleteKnowledgeFile(knowledgeFile: KnowledgeFile) : Either<Exception, Boolean>
+
     fun listFilesForEmail(email: String) : Either<Exception, List<KnowledgeFile>>
 
 }

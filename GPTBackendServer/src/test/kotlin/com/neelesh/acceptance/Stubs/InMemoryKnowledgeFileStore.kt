@@ -25,6 +25,16 @@ class InMemoryKnowledgeFileStore(val existingFiles: List<KnowledgeFile>) : Knowl
         return knowledgeFile.right()
     }
 
+    override fun deleteKnowledgeFile(knowledgeFile: KnowledgeFile): Either<Exception, Boolean> {
+        val indexOfFirst = fileStore.indexOfFirst { file -> file.id == knowledgeFile.id }
+        if (indexOfFirst != -1){
+            fileStore.removeAt(indexOfFirst)
+            return true.right()
+        } else {
+            return false.right()
+        }
+    }
+
     override fun listFilesForEmail(email: String): Either<Exception, List<KnowledgeFile>> {
         return fileStore.filter { knowledgeFile -> knowledgeFile.email == email }.right()
     }
