@@ -11,4 +11,9 @@ export interface SimpleKnowledgeFileCreationRequest {
     email: string
 }
 
+export interface SimpleKnowledgeFileDeletionRequest {
+    knowledgeFileId: string,
+    email: string
+}
+
 export type DataType = "PDF_DOCUMENT" | "WEB_LINK" | "YOUTUBE_LINK" | "PLAIN_TEXT"
