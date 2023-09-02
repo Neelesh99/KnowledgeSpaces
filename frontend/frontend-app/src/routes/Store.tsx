@@ -16,8 +16,8 @@ export default function Store() {
             <div className="flex flex-col px-12 py-2 bg-slate-100">
                 <div className="grid grid-cols-2">
                     <div className="">
-                        <div className="flex flex-row">
-                            <div className="text-2xl font-special p-3">Select knowledge file to save to:</div>
+                        <div className="flex flex-col">
+                            <div className="text-2xl font-special py-3">Select knowledge file to save to:</div>
                             <KnowledgeFilePicker {...{setChosenFile: setChosenFile}}/>
                         </div>
                         <StoreTabs/>

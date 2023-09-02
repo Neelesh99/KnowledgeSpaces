@@ -36,7 +36,7 @@ export default function SubmitQuery(props: SubmitQueryProps) {
 
     return (
         <>
-            <div className="px-2">
+            <div className="px-2 my-4">
                 <button
                     type="button"
                     onClick={openModal}
