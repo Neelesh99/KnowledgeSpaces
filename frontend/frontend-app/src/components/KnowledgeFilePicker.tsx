@@ -47,7 +47,7 @@ export default function KnowledgeFilePicker(props: KnowledgeFilePickerProps) {
             )
 
     return (
-        <div className="pt-6 w-72">
+        <div className="p-2 w-72">
             <Combobox value={selected} onChange={(file) => {
                 setSelected(file)
                 props.setChosenFile(file)
