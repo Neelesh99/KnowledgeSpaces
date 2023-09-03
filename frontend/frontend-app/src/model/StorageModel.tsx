@@ -11,6 +11,11 @@ export interface SimpleKnowledgeFileCreationRequest {
     email: string
 }
 
+export interface SimpleKnowledgeSpaceCreationRequest {
+    knowledgeSpaceName: string,
+    email: string
+}
+
 export interface SimpleKnowledgeFileDeletionRequest {
     knowledgeFileId: string,
     email: string

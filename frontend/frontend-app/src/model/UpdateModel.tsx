@@ -8,6 +8,6 @@ export interface  SimpleKnowledgeFileUpdateRequest {
 export interface SimpleKnowledgeSpaceUpdateRequest {
     knowledgeSpaceId: string,
     email: string,
-    newName: string | undefined,
-    newFiles: string[] | undefined
+    newName: string,
+    newFiles: string[]
 }

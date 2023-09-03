@@ -14,6 +14,7 @@ import {EnvironmentContext} from "./service/EnvironmentContext";
 import {Environment} from "./model/EnvironmentModel";
 import Manage from "./routes/Manage";
 import Space from "./routes/Space";
+import Compose from "./routes/Compose";
 
 function App() {
     const [user, setUser] = useState<User>({username: "default", email: "default", valid: false})
@@ -82,6 +83,17 @@ function App() {
             element: <div>
                 <NavigationBar {...{user: user, loginFunction: login}}/>
                 <Query/>
+            </div>,
+            errorElement: <div>
+                <NavigationBar {...{user: user, loginFunction: login}}/>
+                <ErrorPage/>
+            </div>
+        },
+        {
+            path: "/compose",
+            element: <div>
+                <NavigationBar {...{user: user, loginFunction: login}}/>
+                <Compose/>
             </div>,
             errorElement: <div>
                 <NavigationBar {...{user: user, loginFunction: login}}/>

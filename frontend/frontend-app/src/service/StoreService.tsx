@@ -1,4 +1,8 @@
-import {SimpleBlobUploadRequest, SimpleKnowledgeFileCreationRequest} from "../model/StorageModel";
+import {
+    SimpleBlobUploadRequest,
+    SimpleKnowledgeFileCreationRequest,
+    SimpleKnowledgeSpaceCreationRequest
+} from "../model/StorageModel";
 
 export function convertTextToBlob(text: string) : Blob {
     return new Blob([text], {
@@ -36,6 +40,21 @@ export async function sendCreateKnowledgeFile(prefix: string, simpleCreateFileRe
             "Content-Type": "application/json",
         },
         body: JSON.stringify(simpleCreateFileRequest), // body data type must match "Content-Type" header
+    }).then((response) => {
+        return response.text().then((data) => {
+            return data
+        })
+    })
+}
+
+export async function sendCreateKnowledgeSpace(prefix: string, simpleKnowledgeSpaceCreationRequest: SimpleKnowledgeSpaceCreationRequest) : Promise<string> {
+    const url = prefix + "/contract/api/v1/knowledgeSpace/create?api=42"
+    return await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(simpleKnowledgeSpaceCreationRequest), // body data type must match "Content-Type" header
     }).then((response) => {
         return response.text().then((data) => {
             return data
