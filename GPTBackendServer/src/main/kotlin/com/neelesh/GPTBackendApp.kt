@@ -156,6 +156,7 @@ fun GPTUserApp(oAuthPersistence: OAuthPersistence, dependencies: Dependencies, c
             routes += CreateKnowledgeSpaceRoute(knowledgeSpaceHandler)
             routes += UpdateKnowledgeSpaceRoute(knowledgeSpaceHandler)
             routes += GetFilesRoute(knowledgeFileHandler)
+            routes += GetSpacesRoute(knowledgeSpaceHandler)
         },
 
         routingHttpHandler(API_DESCRIPTION_PATH),

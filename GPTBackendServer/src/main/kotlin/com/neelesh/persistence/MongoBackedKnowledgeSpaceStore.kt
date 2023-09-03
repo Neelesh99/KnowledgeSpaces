@@ -9,7 +9,6 @@ import com.neelesh.model.KnowledgeSpace
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
-import java.lang.Exception
 
 class MongoBackedKnowledgeSpaceStore(val knowledgeSpaceMongoCollection: MongoCollection<KnowledgeSpace>) : KnowledgeSpaceStore {
     override fun getKnowledgeSpace(knowledgeSpaceId: String, email: String): Either<Exception, KnowledgeSpace> {
@@ -28,6 +27,10 @@ class MongoBackedKnowledgeSpaceStore(val knowledgeSpaceMongoCollection: MongoCol
             ReplaceOptions().upsert(true)
         )
         return if(result.wasAcknowledged()) knowledgeSpace.right() else Exception("Could not save knowledge file").left()
+    }
+
+    override fun getSpacesForEmail(email: String): Either<Exception, List<KnowledgeSpace>> {
+        return knowledgeSpaceMongoCollection.find(KnowledgeSpace::email eq email).toList().right()
     }
 
 }

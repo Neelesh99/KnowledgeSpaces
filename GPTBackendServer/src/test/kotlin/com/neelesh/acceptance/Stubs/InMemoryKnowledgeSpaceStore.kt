@@ -24,4 +24,8 @@ class InMemoryKnowledgeSpaceStore : KnowledgeSpaceStore {
         }
         return knowledgeSpace.right()
     }
+
+    override fun getSpacesForEmail(email: String): Either<java.lang.Exception, List<KnowledgeSpace>> {
+        return fileStore.filter { space -> space.email == email }.right()
+    }
 }

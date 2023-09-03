@@ -2,10 +2,13 @@ package com.neelesh.persistence
 
 import arrow.core.Either
 import arrow.core.flatMap
+import com.fasterxml.jackson.databind.JsonNode
 import com.neelesh.model.KnowledgeSpace
 import com.neelesh.routes.SimpleKnowledgeSpaceCreationRequest
 import com.neelesh.routes.SimpleKnowledgeSpaceUpdateRequest
+import com.neelesh.routes.SimpleSpacesRequest
 import com.neelesh.util.UUIDGenerator
+import org.http4k.format.Jackson
 
 class KnowledgeSpaceHandler(
     val knowledgeSpaceStore: KnowledgeSpaceStore,
@@ -34,5 +37,14 @@ class KnowledgeSpaceHandler(
         }.map {
             it.id
         }
+    }
+
+    fun getSpaces(simpleKnowledgeSpacesRequest: SimpleSpacesRequest): Either<Exception, JsonNode> {
+        return knowledgeSpaceStore.getSpacesForEmail(simpleKnowledgeSpacesRequest.email)
+            .map { spaces ->
+                spaces.map { it.toJson() }
+            }.map {
+                Jackson.array(it)
+            }
     }
 }
