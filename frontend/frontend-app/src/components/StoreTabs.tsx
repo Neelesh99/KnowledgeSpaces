@@ -29,8 +29,7 @@ export default function StoreTabs() {
     const [file, setFile] = useState<File>()
 
     function onFileUpload(event: ChangeEvent<HTMLInputElement>) {
-        console.log(event.target.files[0])
-        setFile(event.target.files[0])
+        setFile(event.target.files![0])
     }
 
     function onFileSubmit() {
