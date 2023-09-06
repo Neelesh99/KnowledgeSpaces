@@ -21,5 +21,5 @@ spec:
         - image: neeleshrav/knowledgespacesui:latest
           name: rusty-pangolin
           ports:
-            - containerPort: 5173
+            - containerPort: 80
               name: ci-deploy

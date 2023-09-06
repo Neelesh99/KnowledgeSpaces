@@ -64,7 +64,7 @@ export default function Compose() {
                         <div className="my-4 font-special">Select files to add to space:</div>
                         <ComposeSet files={files} setChosenComposeFile={pickFile}/>
                         <div className="flex flex-row">
-                            {chosenFiles.map(file => <div>{file}</div>)}
+                            {chosenFiles.map(file => <div>{file.fileName}</div>)}
                         </div>
                         <div
                             onClick={() => updateSpace()}

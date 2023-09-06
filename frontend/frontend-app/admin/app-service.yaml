@@ -6,7 +6,7 @@ metadata:
     app: circle
 spec:
   ports:
-    - port: 5173
+    - port: 80
   selector:
     app: ci-deploy
     tier: backend
