@@ -50,7 +50,7 @@ jobs:
       - run:
           command: |
             gcloud container clusters list
-            gcloud container clusters get-credentials llm-cluster
+            gcloud container clusters get-credentials llm-switchback
             kubectl config current-context
             cd LLMServer
             kubectl apply --validate=true --dry-run=true -f admin/
