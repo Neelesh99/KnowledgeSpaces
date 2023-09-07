@@ -33,7 +33,7 @@ jobs:
       - run:
           command: |
             gcloud container clusters list
-            gcloud container clusters get-credentials ui-cluster
+            gcloud container clusters get-credentials ui-switchback
             kubectl config current-context
             cd frontend/frontend-app
             kubectl apply --validate=true --dry-run=true -f admin/
