@@ -11,4 +11,4 @@ spec:
     app: ci-deploy
     tier: backend
   type: LoadBalancer
-  loadBalancerIP: "34.147.176.96"
+  loadBalancerIP: "34.159.146.112"
