@@ -8,6 +8,7 @@ import org.http4k.contract.ContractRoute
 import org.http4k.contract.meta
 import org.http4k.core.*
 import org.http4k.format.Jackson.auto
+import org.jboss.logging.Logger
 import java.io.InputStream
 
 data class SimpleBlobUploadRequest(
@@ -27,6 +28,8 @@ object UploadBlobRoute {
     private val spec = "/upload/blob" meta {
     } bindContract Method.POST
 
+    private val logger = Logger.getLogger(UploadBlobRoute::class.java)
+
     // note that because we don't have any dynamic parameters, we can use a HttpHandler instance instead of a function
     private fun echo(blobHandler: BlobHandler, indexRequestHandler: IndexRequestHandler): HttpHandler = { request: Request ->
         val received = MultipartFormBody.from(request)
@@ -42,10 +45,12 @@ object UploadBlobRoute {
             uploadRequest.knowledgeFileTarget
         )
         val result = blobHandler.upload(uploadRequest)
+        logger.info(result)
         result
             .flatMap { indexRequestHandler.handle(indexRequest) }
             .fold(
             {
+                logger.info(it)
                 Response(Status.INTERNAL_SERVER_ERROR).body(it.message ?: "Internal Server Error")
             }, {
                 Response(Status.OK).body(it)
