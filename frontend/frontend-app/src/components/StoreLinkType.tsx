@@ -1,14 +1,35 @@
 import {Dialog, Transition} from '@headlessui/react'
-import {Fragment, useState} from 'react'
+import {Fragment, useContext, useState} from 'react'
+import {convertSimpleUploadRequestToForData, convertTextToBlob, sendUploadForm} from "../service/StoreService";
+import {SimpleBlobUploadRequest} from "../model/StorageModel";
+import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext";
+import {AuthenticationContext} from "../service/AuthenticationContext";
+import {EnvironmentContext} from "../service/EnvironmentContext";
 
-export default function StoreLink() {
+export interface StoreTypeProps {
+    text: string
+}
+
+export default function StoreLinkType(props: StoreTypeProps) {
     const [isOpen, setIsOpen] = useState(false)
-
+    const targetFile = useContext(ChosenKnowledgeFileContext)
+    const user = useContext(AuthenticationContext)
+    const environment = useContext(EnvironmentContext)
     function closeModal() {
         setIsOpen(false)
     }
 
     function openModal() {
+        const blob = convertTextToBlob(props.text)
+        const simpleUploadRequest: SimpleBlobUploadRequest = {
+            type: "WEB_LINK",
+            fileName: "TextInput" + new Date().toDateString() + ".txt",
+            dataStream: blob,
+            knowledgeFileTarget: targetFile.id,
+            email: user.email
+        }
+        const formData = convertSimpleUploadRequestToForData(simpleUploadRequest)
+        void sendUploadForm(environment.backendPrefix, formData).then(r => console.log(r))
         setIsOpen(true)
     }
 
@@ -54,11 +75,11 @@ export default function StoreLink() {
                                         as="h3"
                                         className="text-lg font-medium leading-6 text-gray-900"
                                     >
-                                        Link submitted succesfully
+                                        Submission succesfull
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-500">
-                                            The link was submitted, it will be read and indexed to the knowledge file you have set.
+                                            This information has now been submitted, we will index it to the knowledge file you set.
                                         </p>
                                     </div>
 

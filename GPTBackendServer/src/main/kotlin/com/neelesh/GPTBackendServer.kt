@@ -23,11 +23,16 @@ import org.http4k.server.asServer
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.getCollection
 import java.time.Clock
+import java.time.Duration
 
 
 fun main() {
     val config = Config.fromEnvironment(Environment.ENV)
     val client1 = OkHttpClient.Builder()
+        .connectTimeout(Duration.ofMinutes(5))
+        .readTimeout(Duration.ofMinutes(5))
+        .callTimeout(Duration.ofMinutes(5))
+        .writeTimeout(Duration.ofMinutes(5))
         .addInterceptor { chain ->
             val original = chain.request()
             val originalUrl = original.url

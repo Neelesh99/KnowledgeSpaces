@@ -1,12 +1,12 @@
 import {ChangeEvent, useContext, useState} from 'react'
 import {Tab} from '@headlessui/react'
 import StoreType from "./StoreType";
-import StoreLink from "./StoreLink";
 import {SimpleBlobUploadRequest} from "../model/StorageModel";
 import {convertSimpleUploadRequestToForData, sendUploadForm} from "../service/StoreService";
 import {ChosenKnowledgeFileContext} from "../service/ChosenKnowledgeFileContext";
 import {AuthenticationContext} from "../service/AuthenticationContext";
 import {EnvironmentContext} from "../service/EnvironmentContext";
+import StoreLinkType from "./StoreLinkType";
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -109,9 +109,9 @@ export default function StoreTabs() {
                     >
                         <div className="flex items-center">
                             <div className="bg-slate-100 h-full p-2 rounded-md">
-                                <input className="text-2xl bg-transparent" type="text" placeholder="Input link"/>
+                                <input className="text-2xl bg-transparent" type="text" placeholder="Input link" onChange={(e) => setText(e.target.value)}/>
                             </div>
-                            <StoreLink/>
+                            <StoreLinkType {...{text: text}}/>
                         </div>
                     </Tab.Panel>
                 </Tab.Panels>
