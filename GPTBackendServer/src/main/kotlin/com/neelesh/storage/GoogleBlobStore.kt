@@ -21,7 +21,8 @@ class GoogleBlobStore(
         blobReferenceCollection.insertOne(blobReference)
         val blobId = BlobId.of(bucketName, blobReference.blobId)
         val blobInfo = BlobInfo.newBuilder(blobId).build()
-        storage.createFrom(blobInfo, content)
+        val contents = content.readAllBytes()
+        storage.createFrom(blobInfo, contents.inputStream())
     }
 
     override fun getBlob(blobId: String): Either<Exception, Pair<BlobReference, InputStream>> {
