@@ -8,11 +8,16 @@ from fastapi import UploadFile
 def plain_text_handler(data: bytes):
     return data.decode()
 
-def save_upload_file_tmp(upload_file: UploadFile) -> Path:
+def link_handler(data: bytes):
+    return data.decode()
+
+async def save_upload_file_tmp(upload_file: UploadFile) -> Path:
     try:
         suffix = Path(upload_file.filename).suffix
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-            shutil.copyfileobj(upload_file.file, tmp)
+
+            read = await upload_file.read()
+            tmp.write(read)
             tmp_path = Path(tmp.name)
     finally:
         upload_file.file.close()
