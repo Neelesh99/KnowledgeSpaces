@@ -29,7 +29,7 @@ class ModelConfig:
 # get_model_config_from_env creates a ModelConfig with defaulting from the environment variables
 def get_model_config_from_env() -> ModelConfig:
     max_input_size_str = os.getenv("MAX_INPUT_SIZE") if "MAX_INPUT_SIZE" in os.environ else "2048"
-    num_outputs_str = os.getenv("NUM_OUTPUTS") if "NUM_OUTPUTS" in os.environ else "512"
+    num_outputs_str = os.getenv("NUM_OUTPUTS") if "NUM_OUTPUTS" in os.environ else "5096"
     max_chunk_overlap_str = os.getenv("MAX_CHUNK_OVERLAP") if "MAX_CHUNK_OVERLAP" in os.environ else "28"
     chunk_size_limit_str = os.getenv("CHUNK_SIZE_LIMIT") if "CHUNK_SIZE_LIMIT" in os.environ else "600"
     temperature_str = os.getenv("TEMPERATURE") if "TEMPERATURE" in os.environ else "0.6"
@@ -71,7 +71,10 @@ def get_openai_api_llm(model_config):
 def get_local_llm_from_huggingface(model_config):
     return HuggingFacePipeline.from_model_id(
         model_id=model_config.model_name, task="text2text-generation",
-        model_kwargs={"temperature": model_config.temperature, "max_length": model_config.num_outputs}
+        model_kwargs={
+            "temperature": model_config.temperature,
+            # "model_max_length": model_config.num_outputs,
+            "max_length": model_config.num_outputs}
     )
 
 

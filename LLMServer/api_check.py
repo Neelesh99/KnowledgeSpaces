@@ -58,6 +58,7 @@ async def handle_index_request(request: Request):
                 filePath = await save_upload_file_tmp(data)
                 documentsForIndex = documentsForIndex + PDFReader().load_data(filePath)
             if blobReference["type"] == "WEB_LINK":
+                print(blobReference["blobId"])
                 data = form[blobReference["fileName"]]
                 link = link_handler(await data.read())
                 documentsForIndex = documentsForIndex + SimpleWebPageReader().load_data([link])
