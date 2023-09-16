@@ -3,15 +3,16 @@ import {useLocation, useNavigate} from "react-router-dom"
 export const NavigationButton = ({ title, link }: { title: string, link: string }) => {
 
     const location = useLocation()
-    const unselectedStyle = "flex w-32 h-12 bg-slate-800 rounded-sm items-center font-special text-lg cursor-pointer transition justify-center hover:bg-gradient-to-r from-emerald-500 to-sky-500"
-    const selectedStyle = "flex w-32 h-12 bg-slate-600 rounded-t-sm items-center font-special text-lg cursor-pointer transition justify-center hover:bg-gradient-to-r from-emerald-500 to-sky-500"
+    const unselectedStyle = "h-fit w-fit px-2 rounded-lg hover:bg-teal-700 hover:text-white transition"
+    const selectedStyle = "h-fit w-fit px-2 bg-teal-700 rounded-lg text-white hover:bg-teal-800 transition"
+
+    const isSelected = location.pathname === link;
 
     const navigate = useNavigate()
-
     return <div
         onClick={() => navigate(link)}
-        className={location.pathname === link ? selectedStyle : unselectedStyle}>
-        <div className="text-white">
+        className={"flex w-32 h-12 rounded-t-sm items-center font-special text-lg cursor-pointer transition justify-center"}>
+        <div className={isSelected ? selectedStyle : unselectedStyle}>
             {title}
         </div>
     </div>

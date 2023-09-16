@@ -1,7 +1,7 @@
 export const LoginButton = ({ title, loginFunction }: { title: string, loginFunction: () => void }) => {
 
-    return <div className="flex w-32 h-12 bg-slate-800 rounded-sm items-center font-special text-lg cursor-pointer transition justify-center hover:bg-gradient-to-r from-emerald-500 to-sky-500" onClick={() => loginFunction()}>
-        <div className="text-white">
+    return <div className="flex w-36 h-12 rounded-sm items-center font-special text-lg cursor-pointer transition justify-center" onClick={() => loginFunction()}>
+        <div className="rounded-lg px-2 hover:bg-teal-700 hover:text-white transition">
             {title}
         </div>
     </div>

@@ -9,9 +9,9 @@ interface NavigationBarProps {
 
 export function NavigationBar(props: NavigationBarProps) {
 
-    return <div className="w-screen bg-slate-800 h-12 sticky top-0 flex justify-between">
+    return <div className="w-screen bg-gradient-to-r from-sky-100 to-teal-100 h-12 sticky top-0 flex justify-between">
         <div className="flex">
-            <div className="flex text-lg w-32 font-special text-white items-center justify-center">
+            <div className="flex text-lg w-32 font-special items-center justify-center">
                 <div>
                     MyStuff
                 </div>
