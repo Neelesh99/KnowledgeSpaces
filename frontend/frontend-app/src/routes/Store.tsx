@@ -10,8 +10,8 @@ export default function Store() {
 
     return <ChosenKnowledgeFileContext.Provider value={chosenFile}>
         <div className="flex flex-col">
-            <div className="w-full h-fit bg-slate-600">
-                <div className="text-3xl font-special p-3 text-white">Store</div>
+            <div className="w-full h-fit bg-sky-100">
+                <div className="text-3xl font-special p-3">Store</div>
             </div>
             <div className="flex flex-col px-12 py-2 bg-slate-100">
                 <div className="grid grid-cols-2">
